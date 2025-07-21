@@ -7,7 +7,6 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User } from 'lucide-react';
 import { useRef, useEffect } from 'react';
-import { init } from 'next/dist/compiled/webpack/webpack';
 
 export default function ChatBot() {
     const id = 'chatbot'; // Unique identifier for the chat session
@@ -57,19 +56,6 @@ export default function ChatBot() {
                     ref={scrollAreaRef}
                 >
                     <div className="space-y-6">
-                        {messages.length === 0 && (
-                            <div className="text-center py-12">
-                                <Bot className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                                <h2 className="text-xl font-medium text-gray-900 mb-2">
-                                    Ciao! Come posso aiutarti oggi?
-                                </h2>
-                                <p className="text-gray-500">
-                                    Scrivi un messaggio per iniziare la
-                                    conversazione
-                                </p>
-                            </div>
-                        )}
-
                         {messages.map((message) => (
                             <div
                                 key={message.id}
