@@ -7,10 +7,22 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User } from 'lucide-react';
 import { useRef, useEffect } from 'react';
+import { init } from 'next/dist/compiled/webpack/webpack';
 
 export default function ChatBot() {
+    const id = 'chatbot'; // Unique identifier for the chat session
+
     const { messages, input, handleInputChange, handleSubmit, isLoading } =
-        useChat();
+        useChat({
+            id,
+            initialMessages: [
+                {
+                    id: 'welcome',
+                    role: 'assistant',
+                    content: 'Ciao! Come posso aiutarti oggi? Dimmi pure!',
+                },
+            ],
+        });
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom when new messages arrive
