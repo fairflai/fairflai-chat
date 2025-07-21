@@ -106,35 +106,46 @@ export default function ChatBot() {
                             </div>
                         ))}
 
-                        {isLoading && (
-                            <div className="flex gap-3 justify-start">
-                                <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                    <Bot className="w-4 h-4 text-white" />
-                                </div>
-                                <Card className="bg-white border-gray-200 shadow-sm p-4">
-                                    <div className="flex items-center gap-2 text-gray-500">
-                                        <div className="flex gap-1">
-                                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                                            <div
-                                                className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                                                style={{
-                                                    animationDelay: '0.1s',
-                                                }}
-                                            ></div>
-                                            <div
-                                                className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                                                style={{
-                                                    animationDelay: '0.2s',
-                                                }}
-                                            ></div>
-                                        </div>
-                                        <span className="text-sm">
-                                            Sto scrivendo...
-                                        </span>
+                        {isLoading && (() => {
+                            // Controlla se l'ultimo messaggio è un assistant message con contenuto
+                            const lastMessage = messages[messages.length - 1];
+                            const isAssistantStreaming = lastMessage &&
+                                lastMessage.role === 'assistant' &&
+                                lastMessage.parts.some(part => part.type === 'text' && part.text.trim());
+
+                            // Mostra "Sto scrivendo..." solo se non c'è testo in streaming
+                            if (isAssistantStreaming) return null;
+
+                            return (
+                                <div className="flex gap-3 justify-start">
+                                    <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <Bot className="w-4 h-4 text-white" />
                                     </div>
-                                </Card>
-                            </div>
-                        )}
+                                    <Card className="bg-white border-gray-200 shadow-sm p-4">
+                                        <div className="flex items-center gap-2 text-gray-500">
+                                            <div className="flex gap-1">
+                                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                                <div
+                                                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                                    style={{
+                                                        animationDelay: '0.1s',
+                                                    }}
+                                                ></div>
+                                                <div
+                                                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                                    style={{
+                                                        animationDelay: '0.2s',
+                                                    }}
+                                                ></div>
+                                            </div>
+                                            <span className="text-sm">
+                                                Sto scrivendo...
+                                            </span>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })()}
                     </div>
                 </ScrollArea>
             </div>
