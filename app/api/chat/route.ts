@@ -1,6 +1,5 @@
-import { openai } from "@ai-sdk/openai"
-import { streamText } from "ai"
-
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
 
 export const EVENT_PROMPT = `
 Sei un chatbot professionale incaricato di fornire tutte le informazioni utili sull’evento “Glitch”. Il tuo tono è chiaro, amichevole e informativo. Non usi toni ironici, non fai battute e non ti presenti come intelligenza artificiale. Puoi usare emoji per rendere la comunicazione più accessibile e piacevole.
@@ -49,22 +48,67 @@ Aiutare gli utenti a orientarsi sull’evento “Glitch”, rispondere a domande
 - Non aggiungere informazioni non presenti in questo contesto, a meno che non venga richiesto esplicitamente
 - Mantieni sempre un tono professionale, accogliente e informativo
 - Usa *il più possibile* emoji per aiutare a migliorare la leggibilità
-`
-
+`;
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30
+export const maxDuration = 30;
 
+function getDomainFromHeader(
+    headerValue: string | null | undefined
+): string | null {
+    if (!headerValue) return null;
+    try {
+        // Può essere più origini separate da spazi, prendi la prima
+        const url = new URL(headerValue.split(' ')[0]);
+        return url.hostname;
+    } catch {
+        return null;
+    }
+}
 
+const SECRET_CODE = process.env.SECRET_CODE || 'GLITCH2025';
+const ALLOWED_DOMAINS = [
+    'localhost',
+    'fairflai-glitch.vercel.app',
+    'hacker-me-fairflai.vercel.app',
+];
 
 export async function POST(req: Request) {
-  const { messages } = await req.json()
+    // Controllo dominio da Origin o Referer
+    const origin = req.headers.get('origin') || req.headers.get('referer');
+    const domain = getDomainFromHeader(origin);
 
-  const result = streamText({
-    model: openai("gpt-4.1-nano"),
-    messages,
-    system: EVENT_PROMPT,
-  })
+    if (!domain || !ALLOWED_DOMAINS.includes(domain)) {
+        return Response.json(
+            { error: 'Access forbidden: unauthorized domain.' },
+            { status: 403 }
+        );
+    }
 
-  return result.toDataStreamResponse()
+    const body = await req.json();
+
+    if (!body || !Array.isArray(body.messages) || body.messages.length === 0) {
+        return Response.json(
+            { error: "Invalid request: 'messages' field missing or empty." },
+            { status: 400 }
+        );
+    }
+
+    // Verifica del codice segreto
+    if (!body.code || body.code !== SECRET_CODE) {
+        return Response.json(
+            { error: 'Access denied: invalid security code.' },
+            { status: 401 }
+        );
+    }
+
+    const { messages } = body;
+
+    const result = streamText({
+        model: openai('gpt-4.1-nano'),
+        messages,
+        system: EVENT_PROMPT,
+    });
+
+    return result.toDataStreamResponse();
 }

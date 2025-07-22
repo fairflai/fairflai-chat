@@ -7,9 +7,12 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User } from 'lucide-react';
 import { useRef, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export default function ChatBot() {
     const id = 'chatbot'; // Unique identifier for the chat session
+    const searchParams = useSearchParams();
+    const code = searchParams.get('code');
 
     const { messages, input, handleInputChange, handleSubmit, isLoading } =
         useChat({
@@ -18,9 +21,19 @@ export default function ChatBot() {
                 {
                     id: 'welcome',
                     role: 'assistant',
-                    content: 'Ciao! Come posso aiutarti oggi? Dimmi pure!',
+                    content: `🗝 Accesso confermato. Stai per entrare in Glitch.
+Un’interferenza voluta, non un errore.
+Qui esploriamo l’intelligenza artificiale senza filtri, con occhi critici e mente aperta.
+
+Vuoi iniziare a scoprire i dettagli?
+Posso raccontarti quando arrivare, cosa succede, chi ci sarà...
+Dimmi tu da dove vuoi partire.`,
                 },
             ],
+            streamProtocol: 'data',
+            body: {
+                code: code || undefined,
+            },
         });
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -33,24 +46,46 @@ export default function ChatBot() {
     }, [messages]);
 
     return (
-        <div className="min-h-screen bg-white flex flex-col">
+        <div
+            className="min-h-dvh flex flex-col relative"
+            style={{
+                backgroundImage:
+                    'url(https://fairflai.com/wp-content/uploads/2025/03/fireflies-mystic-stream-3.webp)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundAttachment: 'fixed',
+            }}
+        >
+            {/* Background overlay filter */}
+            <div
+                className="absolute inset-0 z-0"
+                style={{
+                    background:
+                        'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(59,130,246,0.3) 50%, rgba(147,197,253,0.2) 100%)',
+                }}
+            ></div>
+
             {/* Header */}
-            <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+            <div className="bg-white/30 backdrop-blur-sm sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 py-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 justify-center md:justify-start">
                         <div>
                             <img
-                                src="https://fairflai.com/wp-content/uploads/2025/03/Screenshot-2025-03-08-002645.png"
+                                src="/logo.png"
                                 alt="FairFlai Logo"
-                                className="h-12 w-auto"
+                                className="h-4 w-auto"
                             />
+                        </div>
+                        <div className="text-xl font-bold text-black">
+                            FAIRFLAI // GLITCH
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-6">
+            <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-6 relative z-10">
                 <ScrollArea
                     className="h-[calc(100vh-200px)]"
                     ref={scrollAreaRef}
@@ -65,11 +100,11 @@ export default function ChatBot() {
                                         : 'justify-start'
                                 }`}
                             >
-                                {message.role === 'assistant' && (
+                                {/* message.role === 'assistant' && (
                                     <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                                         <Bot className="w-4 h-4 text-white" />
                                     </div>
-                                )}
+                                )*/}
 
                                 <Card
                                     className={`max-w-[80%] p-4 ${
@@ -96,11 +131,11 @@ export default function ChatBot() {
                                     </div>
                                 </Card>
 
-                                {message.role === 'user' && (
+                                {/* message.role === 'user' && (
                                     <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                                         <User className="w-4 h-4 text-gray-600" />
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         ))}
 
@@ -158,7 +193,7 @@ export default function ChatBot() {
             </div>
 
             {/* Input Area */}
-            <div className="border-t border-gray-200 bg-white/80 backdrop-blur-sm sticky bottom-0">
+            <div className="bg-white/30 backdrop-blur-sm sticky bottom-0">
                 <div className="max-w-4xl mx-auto px-4 py-4">
                     <form onSubmit={handleSubmit} className="flex gap-3">
                         <Input
@@ -176,7 +211,7 @@ export default function ChatBot() {
                             <Send className="w-4 h-4" />
                         </Button>
                     </form>
-                    <p className="text-xs text-gray-400 mt-2 text-center">
+                    <p className="text-xs text-gray-700 mt-2 text-center font-medium">
                         Premi Invio per inviare il messaggio
                     </p>
                 </div>
