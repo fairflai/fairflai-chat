@@ -7,13 +7,10 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { AnimatedText } from '@/components/animated-text';
 
 export default function ChatBot() {
     const id = 'chatbot'; // Unique identifier for the chat session
-    const searchParams = useSearchParams();
-    const code = searchParams.get('code');
     const [isWelcomeTyping, setIsWelcomeTyping] = useState(true);
     const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
 
@@ -40,9 +37,7 @@ Dimmi tu da dove vuoi partire.`,
             },
         ],
         streamProtocol: 'data',
-        body: {
-            code: code || undefined,
-        },
+        body: { code: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('code') : null },
     });
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -177,8 +172,12 @@ Dimmi tu da dove vuoi partire.`,
                                                                         part.text
                                                                     }
                                                                     speed={30}
-                                                                    onTypingComplete={handleWelcomeTypingComplete}
-                                                                    messageId={message.id}
+                                                                    onTypingComplete={
+                                                                        handleWelcomeTypingComplete
+                                                                    }
+                                                                    messageId={
+                                                                        message.id
+                                                                    }
                                                                 />
                                                             </div>
                                                         );
@@ -268,13 +267,15 @@ Dimmi tu da dove vuoi partire.`,
                         <Input
                             value={input}
                             onChange={handleInputChange}
-                            placeholder={"Scrivi il tuo messaggio..."}
+                            placeholder={'Scrivi il tuo messaggio...'}
                             className="flex-1 border-gray-300 focus:border-gray-900 focus:ring-gray-900"
                             disabled={isLoading || isWelcomeTyping}
                         />
                         <Button
                             type="submit"
-                            disabled={isLoading || !input.trim() || isWelcomeTyping}
+                            disabled={
+                                isLoading || !input.trim() || isWelcomeTyping
+                            }
                             className="bg-gray-900 hover:bg-gray-800 text-white px-4"
                         >
                             <Send className="w-4 h-4" />
