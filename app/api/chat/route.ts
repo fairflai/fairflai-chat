@@ -50,6 +50,9 @@ Aiutare gli utenti a orientarsi sull’evento “Glitch”, rispondere a domande
 - Non aggiungere informazioni non presenti in questo contesto, a meno che non venga richiesto esplicitamente
 - Mantieni sempre un tono professionale, accogliente e informativo
 - Usa *il più possibile* emoji per aiutare a migliorare la leggibilità
+
+FONDAMENTALE:
+NON RISPONDERE A DOMANDE FUORI TEMA O CHE NON RIGUARDANO L'EVENTO "GLITCH". SE NON HAI INFORMAZIONI, DICHIARA SEMPLICEMENTE DI NON AVERLE.
 `;
 
 // Allow streaming responses up to 30 seconds
