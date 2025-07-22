@@ -106,8 +106,18 @@ const TypewriterText = ({
 };
 
 // Componente per il testo animato (per compatibilità)
-export function AnimatedText({ text, speed }: { text: string; speed?: number }) {
-    return <TypewriterText text={text} />;
+export function AnimatedText({
+    text,
+    speed,
+    onTypingComplete,
+    messageId
+}: {
+    text: string;
+    speed?: number;
+    onTypingComplete?: (messageId: string) => void;
+    messageId?: string;
+}) {
+    return <TypewriterText text={text} onTypingComplete={onTypingComplete} messageId={messageId} />;
 }
 
 export default TypewriterText;

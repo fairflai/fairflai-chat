@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User } from 'lucide-react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AnimatedText } from '@/components/animated-text';
 
@@ -14,6 +14,7 @@ export default function ChatBot() {
     const id = 'chatbot'; // Unique identifier for the chat session
     const searchParams = useSearchParams();
     const code = searchParams.get('code');
+    const [isWelcomeTyping, setIsWelcomeTyping] = useState(true);
 
     const {
         messages,
@@ -43,6 +44,13 @@ Dimmi tu da dove vuoi partire.`,
         },
     });
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+    // Callback per gestire il completamento dell'animazione del messaggio di benvenuto
+    const handleWelcomeTypingComplete = (messageId: string) => {
+        if (messageId === 'welcome') {
+            setIsWelcomeTyping(false);
+        }
+    };
 
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
@@ -151,6 +159,8 @@ Dimmi tu da dove vuoi partire.`,
                                                                         part.text
                                                                     }
                                                                     speed={30}
+                                                                    onTypingComplete={handleWelcomeTypingComplete}
+                                                                    messageId={message.id}
                                                                 />
                                                             </div>
                                                         );
@@ -240,13 +250,13 @@ Dimmi tu da dove vuoi partire.`,
                         <Input
                             value={input}
                             onChange={handleInputChange}
-                            placeholder="Scrivi il tuo messaggio..."
+                            placeholder={"Scrivi il tuo messaggio..."}
                             className="flex-1 border-gray-300 focus:border-gray-900 focus:ring-gray-900"
-                            disabled={isLoading}
+                            disabled={isLoading || isWelcomeTyping}
                         />
                         <Button
                             type="submit"
-                            disabled={isLoading || !input.trim()}
+                            disabled={isLoading || !input.trim() || isWelcomeTyping}
                             className="bg-gray-900 hover:bg-gray-800 text-white px-4"
                         >
                             <Send className="w-4 h-4" />
