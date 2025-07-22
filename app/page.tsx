@@ -15,6 +15,7 @@ export default function ChatBot() {
     const searchParams = useSearchParams();
     const code = searchParams.get('code');
     const [isWelcomeTyping, setIsWelcomeTyping] = useState(true);
+    const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
 
     const {
         messages,
@@ -59,6 +60,15 @@ Dimmi tu da dove vuoi partire.`,
                 scrollAreaRef.current.scrollHeight;
         }
     }, [messages]);
+
+    // Gestisci l'apparizione del messaggio di benvenuto con delay
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsWelcomeVisible(true);
+        }, 100); // 500ms delay solo per il messaggio di benvenuto
+
+        return () => clearTimeout(timer);
+    }, []);
 
     return (
         <div
@@ -125,6 +135,14 @@ Dimmi tu da dove vuoi partire.`,
                                     message.role === 'user'
                                         ? 'justify-end'
                                         : 'justify-start'
+                                } ${
+                                    message.id === 'welcome'
+                                        ? `transition-all duration-500 ease-out ${
+                                              isWelcomeVisible
+                                                  ? 'opacity-100 translate-y-0'
+                                                  : 'opacity-0 translate-y-4'
+                                          }`
+                                        : ''
                                 }`}
                             >
                                 {/* message.role === 'assistant' && (
@@ -206,25 +224,25 @@ Dimmi tu da dove vuoi partire.`,
                                 if (isAssistantStreaming) return null;
 
                                 return (
-                                    <div className="flex gap-3 justify-start">
+                                    <div className="flex gap-3 justify-start transition-all duration-500 ease-out opacity-100 translate-y-0">
                                         {/*
                                         <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                                             <Bot className="w-4 h-4 text-white" />
                                         </div>
                                          */}
                                         <Card className="bg-white/40 shadow-sm p-4 backdrop-blur-md border-none">
-                                            <div className="flex items-center gap-2 text-gray-500">
+                                            <div className="flex items-center gap-2 text-gray-800">
                                                 <div className="flex gap-1">
-                                                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                                    <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"></div>
                                                     <div
-                                                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                                        className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
                                                         style={{
                                                             animationDelay:
                                                                 '0.1s',
                                                         }}
                                                     ></div>
                                                     <div
-                                                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                                        className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
                                                         style={{
                                                             animationDelay:
                                                                 '0.2s',
