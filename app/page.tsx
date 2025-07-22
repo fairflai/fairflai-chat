@@ -74,7 +74,7 @@ Dimmi tu da dove vuoi partire.`,
             ></div>
 
             {/* Header */}
-            <div className="bg-white/30 backdrop-blur-sm sticky top-0 z-10">
+            <div className="bg-white/40 backdrop-blur-sm sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 py-4">
                     <div className="flex items-center gap-3 justify-center md:justify-start">
                         <div>
@@ -126,10 +126,10 @@ Dimmi tu da dove vuoi partire.`,
                                 )*/}
 
                                 <Card
-                                    className={`max-w-[80%] p-4 backdrop-blur-md ${
+                                    className={`max-w-[80%] p-4 backdrop-blur-md border-none ${
                                         message.role === 'user'
-                                            ? 'bg-gray-900/70 text-white border-gray-700/50'
-                                            : 'bg-white/70 border-gray-200/50 shadow-sm'
+                                            ? 'bg-gray-900/40 text-white'
+                                            : 'bg-white/40 shadow-sm'
                                     }`}
                                 >
                                     <div className="whitespace-pre-wrap text-sm leading-relaxed">
@@ -202,7 +202,7 @@ Dimmi tu da dove vuoi partire.`,
                                             <Bot className="w-4 h-4 text-white" />
                                         </div>
                                          */}
-                                        <Card className="bg-white/70 border-gray-200/50 shadow-sm p-4 backdrop-blur-md">
+                                        <Card className="bg-white/40 shadow-sm p-4 backdrop-blur-md border-none">
                                             <div className="flex items-center gap-2 text-gray-500">
                                                 <div className="flex gap-1">
                                                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -234,7 +234,7 @@ Dimmi tu da dove vuoi partire.`,
             </div>
 
             {/* Input Area */}
-            <div className="bg-white/30 backdrop-blur-sm sticky bottom-0">
+            <div className="bg-white/40 backdrop-blur-sm sticky bottom-0">
                 <div className="max-w-4xl mx-auto px-4 py-4">
                     <form onSubmit={handleSubmit} className="flex gap-3">
                         <Input
