@@ -8,11 +8,24 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import { AnimatedText } from '@/components/animated-text';
+import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
 
 export default function ChatBot() {
     const id = 'chatbot'; // Unique identifier for the chat session
     const [isWelcomeTyping, setIsWelcomeTyping] = useState(true);
     const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
+
+    // Scroll hook
+    const { containerRef, endRef, scrollToBottom } = useScrollToBottom();
+
+    // Domande rapide
+    const [quickQuestions, setQuickQuestions] = useState([
+        "Che cos'è FAIRFLAI GLITCH?",
+        "Quando e dove si svolge l'evento?",
+        "Come posso partecipare?",
+        "Cosa si mangia all'evento?",
+        "Quanto dura l'evento?",
+    ]);
 
     const {
         messages,
@@ -21,25 +34,22 @@ export default function ChatBot() {
         handleSubmit,
         isLoading,
         error,
+        append,
     } = useChat({
         id,
         initialMessages: [
             {
                 id: 'welcome',
                 role: 'assistant',
-                content: `🗝 Accesso confermato. Stai per entrare in Glitch.
-Un'interferenza voluta, non un errore.
-Qui esploriamo l'intelligenza artificiale senza filtri, con occhi critici e mente aperta.
-
-Vuoi iniziare a scoprire i dettagli?
-Posso raccontarti quando arrivare, cosa succede, chi ci sarà...
-Dimmi tu da dove vuoi partire.`,
+                content: `Ciao! Sono l’assistente AI di FAIRFLAI.
+Se hai domande sull’evento, chiedi pure.
+Oppure clicca uno dei box qui sotto, ti rispondo in un attimo.
+`,
             },
         ],
         streamProtocol: 'data',
         body: { code: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('code') : null },
     });
-    const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     // Callback per gestire il completamento dell'animazione del messaggio di benvenuto
     const handleWelcomeTypingComplete = (messageId: string) => {
@@ -50,11 +60,8 @@ Dimmi tu da dove vuoi partire.`,
 
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
-        if (scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTop =
-                scrollAreaRef.current.scrollHeight;
-        }
-    }, [messages]);
+        scrollToBottom('auto');
+    }, [messages, scrollToBottom]);
 
     // Gestisci l'apparizione del messaggio di benvenuto con delay
     useEffect(() => {
@@ -64,6 +71,18 @@ Dimmi tu da dove vuoi partire.`,
 
         return () => clearTimeout(timer);
     }, []);
+
+    // Funzione per gestire il click su una domanda rapida
+    const handleQuickQuestion = (question: string) => {
+        // Rimuovi la domanda dalla lista
+        setQuickQuestions(prev => prev.filter(q => q !== question));
+
+        // Invia il messaggio usando append
+        append({
+            role: 'user',
+            content: question,
+        });
+    };
 
     return (
         <div
@@ -119,8 +138,8 @@ Dimmi tu da dove vuoi partire.`,
             {/* Chat Area */}
             <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-6 relative z-10">
                 <ScrollArea
-                    className="h-[calc(100vh-200px)]"
-                    ref={scrollAreaRef}
+                    className={`${quickQuestions.length > 0 && !isWelcomeTyping ? 'h-[calc(100dvh-280px)]' : 'h-[calc(100dvh-200px)]'}`}
+                    ref={containerRef}
                 >
                     <div className="space-y-6">
                         {messages.map((message) => (
@@ -257,12 +276,38 @@ Dimmi tu da dove vuoi partire.`,
                                 );
                             })()}
                     </div>
+                    {/* End reference for scroll */}
+                    <div ref={endRef} />
                 </ScrollArea>
             </div>
 
             {/* Input Area */}
             <div className="bg-white/40 backdrop-blur-sm sticky bottom-0">
                 <div className="max-w-4xl mx-auto px-4 py-4">
+                    {/* Quick Questions */}
+                    {quickQuestions.length > 0 && !isWelcomeTyping && (
+                        <div className="mb-4">
+                            <h3 className="text-xs font-medium text-gray-800 mb-2 text-center">
+                                Domande frequenti:
+                            </h3>
+                            <div className="overflow-x-auto pb-1 scrollbar-thin">
+                                <div className="flex gap-2 min-w-max">
+                                    {quickQuestions.map((question, index) => (
+                                        <Button
+                                            key={index}
+                                            variant="outline"
+                                            onClick={() => handleQuickQuestion(question)}
+                                            className="flex-shrink-0 whitespace-nowrap h-auto px-3 py-2 bg-white/60 backdrop-blur-md border-gray-300 hover:bg-white/80 transition-all duration-200 text-xs font-normal text-gray-800 hover:text-gray-900"
+                                            disabled={isLoading}
+                                        >
+                                            {question}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="flex gap-3">
                         <Input
                             value={input}
