@@ -1,5 +1,5 @@
-import { openai } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai'
+import { streamText } from 'ai'
 
 export const EVENT_PROMPT = `
 "Sei un agente di comunicazione eventi.
@@ -34,67 +34,67 @@ Non aggiungere elementi inventati se non richiesto esplicitamente.
 IMPORTANTE:
 - SE VENGONO FATTE DOMANDE GENERICHE O NON RIGUARDANTI L'EVENTO ""GLITCH"" RISPONDI CHE FAIRFLAI TI HA PROGETTATO SOLO PER RISPONDERE A DOMANDE SU QUESTO TEMA E CHE PUò UTILIZZARE ALTRI STRUMENTI PER AVERE LA RISPOSTA.
 - FAI RIFERIMENTO SOLO AGLI ELEMENTI FORNITI NELLA DESCRIZIONE DELL'EVENTO."
-`;
+`
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+export const maxDuration = 30
 
 function getDomainFromHeader(
-    headerValue: string | null | undefined
+  headerValue: string | null | undefined
 ): string | null {
-    if (!headerValue) return null;
-    try {
-        // Può essere più origini separate da spazi, prendi la prima
-        const url = new URL(headerValue.split(' ')[0]);
-        return url.hostname;
-    } catch {
-        return null;
-    }
+  if (!headerValue) return null
+  try {
+    // Può essere più origini separate da spazi, prendi la prima
+    const url = new URL(headerValue.split(' ')[0])
+    return url.hostname
+  } catch {
+    return null
+  }
 }
 
-const SECRET_CODE = process.env.SECRET_CODE || 'GLITCH2025';
+const SECRET_CODE = process.env.SECRET_CODE || 'GLITCH2025'
 const ALLOWED_DOMAINS = [
-    'localhost',
-    'fairflai-glitch.vercel.app',
-    'hacker-me-fairflai.vercel.app',
-];
+  'localhost',
+  'fairflai-glitch.vercel.app',
+  'hacker-me-fairflai.vercel.app',
+]
 
 export async function POST(req: Request) {
-    // Controllo dominio da Origin o Referer
-    const origin = req.headers.get('origin') || req.headers.get('referer');
-    const domain = getDomainFromHeader(origin);
+  // Controllo dominio da Origin o Referer
+  const origin = req.headers.get('origin') || req.headers.get('referer')
+  const domain = getDomainFromHeader(origin)
 
-    if (!domain || !ALLOWED_DOMAINS.includes(domain)) {
-        return Response.json(
-            { error: 'Access forbidden: unauthorized domain.' },
-            { status: 403 }
-        );
-    }
+  if (!domain || !ALLOWED_DOMAINS.includes(domain)) {
+    return Response.json(
+      { error: 'Access forbidden: unauthorized domain.' },
+      { status: 403 }
+    )
+  }
 
-    const body = await req.json();
+  const body = await req.json()
 
-    if (!body || !Array.isArray(body.messages) || body.messages.length === 0) {
-        return Response.json(
-            { error: "Invalid request: 'messages' field missing or empty." },
-            { status: 400 }
-        );
-    }
+  if (!body || !Array.isArray(body.messages) || body.messages.length === 0) {
+    return Response.json(
+      { error: "Invalid request: 'messages' field missing or empty." },
+      { status: 400 }
+    )
+  }
 
-    // Verifica del codice segreto
-    if (!body.code || body.code !== SECRET_CODE) {
-        return Response.json(
-            { error: 'Access denied: invalid security code.' },
-            { status: 401 }
-        );
-    }
+  // Verifica del codice segreto
+  if (!body.code || body.code !== SECRET_CODE) {
+    return Response.json(
+      { error: 'Access denied: invalid security code.' },
+      { status: 401 }
+    )
+  }
 
-    const { messages } = body;
+  const { messages } = body
 
-    const result = streamText({
-        model: openai('gpt-4.1-mini'),
-        messages,
-        system: EVENT_PROMPT,
-    });
+  const result = streamText({
+    model: openai('gpt-4.1-mini'),
+    messages,
+    system: EVENT_PROMPT,
+  })
 
-    return result.toDataStreamResponse();
+  return result.toDataStreamResponse()
 }
