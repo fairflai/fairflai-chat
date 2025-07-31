@@ -1,7 +1,7 @@
 import { openai } from '@ai-sdk/openai'
 import { streamText } from 'ai'
 
-export const EVENT_PROMPT = `
+const EVENT_PROMPT = `
 "Sei un agente di comunicazione eventi.
 Il tuo linguaggio è preciso, accogliente, simpatico.
 Parli come un PR che deve spiegare i dettagli di un evento. Fornisci sempre tutte le informazioni in modo chiaro e semplice a chi te le chiede, chiarisci i dubbi.

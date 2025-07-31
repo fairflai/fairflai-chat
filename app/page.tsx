@@ -21,11 +21,11 @@ export default function ChatBot() {
 
     // Domande rapide
     const [quickQuestions, setQuickQuestions] = useState([
-        "Che cos'è FAIRFLAI GLITCH?",
-        "Quando e dove si svolge l'evento?",
+        "Che cos&apos;è FAIRFLAI GLITCH?",
+        "Quando e dove si svolge l&apos;evento?",
         'Come posso partecipare?',
-        "Cosa si mangia all'evento?",
-        "Quanto dura l'evento?",
+        "Cosa si mangia all&apos;evento?",
+        "Quanto dura l&apos;evento?",
     ]);
 
     const {
@@ -173,10 +173,10 @@ export default function ChatBot() {
                         {/* Titolo e Descrizione */}
                         <div className="space-y-4">
                             <h1 className="text-2xl font-bold text-gray-900">
-                                Ciao, sono l'assistente di FAIRFLAI
+                                Ciao, sono l&apos;assistente di FAIRFLAI
                             </h1>
                             <p className="text-lg text-gray-700 leading-relaxed">
-                                Fammi pure domande sull'evento oppure clicca uno
+                                Fammi pure domande sull&apos;evento oppure clicca uno
                                 dei box qui sotto.
                             </p>
                         </div>
@@ -317,7 +317,11 @@ export default function ChatBot() {
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
                                             e.preventDefault();
-                                            handleFormSubmit(e as any);
+                                            // Manually trigger form submission
+                                            if (input.trim()) {
+                                                setShowSplashScreen(false);
+                                                handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+                                            }
                                         }
                                     }}
                                     style={{
