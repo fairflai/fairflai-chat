@@ -21,6 +21,7 @@ function getDomainFromHeader(
 const SECRET_CODE = process.env.SECRET_CODE || 'GLITCH2025'
 const ALLOWED_DOMAINS = [
   'localhost',
+  '192.168.1.145',
   'fairflai-glitch.vercel.app',
   'hacker-me-fairflai.vercel.app',
 ]

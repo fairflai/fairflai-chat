@@ -121,10 +121,6 @@
   }
 }
 
-body {
-  overflow: hidden;
-}
-
 /* Markdown content styles for assistant messages */
 .markdown-content {
   @apply text-base leading-relaxed;
