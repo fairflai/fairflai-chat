@@ -7,14 +7,24 @@ import { Card } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
 import { ArrowUp } from 'lucide-react'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom'
+import MarkdownIt from 'markdown-it'
 
 export default function ChatBot() {
   const id = 'chatbot' // Unique identifier for the chat session
   const [showSplashScreen, setShowSplashScreen] = useState(true)
   const [inputAreaHeight, setInputAreaHeight] = useState(56) // Altezza iniziale del textarea
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Initialize markdown-it
+  const md = useMemo(() => {
+    return new MarkdownIt({
+      html: false, // Disable HTML tags for security
+      breaks: true, // Convert '\n' in paragraphs into <br>
+      linkify: true, // Autoconvert URL-like text to links
+    })
+  }, [])
 
   // Scroll hook
   const { containerRef, endRef, scrollToBottom } = useScrollToBottom()
@@ -223,12 +233,20 @@ export default function ChatBot() {
                         : 'bg-transparent border-none shadow-none text-gray-800'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap text-base leading-relaxed">
+                    <div className={`text-base leading-relaxed ${
+                      message.role === 'assistant' ? 'markdown-content' : 'whitespace-pre-wrap'
+                    }`}>
                       {message.parts.map((part, i) => {
                         switch (part.type) {
                           case 'text':
                             return (
-                              <div key={`${message.id}-${i}`}>{part.text}</div>
+                              <div 
+                                key={`${message.id}-${i}`}
+                                {...(message.role === 'assistant' 
+                                  ? { dangerouslySetInnerHTML: { __html: md.render(part.text) } }
+                                  : { children: part.text }
+                                )}
+                              />
                             )
                           default:
                             return null
