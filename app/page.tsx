@@ -143,7 +143,7 @@ export default function ChatBot() {
       {/* Error Display */}
       {error && (
         <div className="fixed w-full z-50 top-0 left-0 bg-red-50 backdrop-blur-sm border-b border-red-200 shadow-lg">
-          <div className="max-w-4xl mx-auto px-4 py-3">
+          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-center">
             <p className="text-sm font-medium text-red-800">
               ⚠️ Si è verificato un errore durante la comunicazione
             </p>
