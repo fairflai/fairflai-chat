@@ -320,7 +320,7 @@ export default function ChatBot() {
                 value={input}
                 onChange={handleInputChangeWithResize}
                 placeholder={'Scrivi il tuo messaggio...'}
-                className="w-full min-h-14 max-h-30 pr-12 pl-6 text-base md:text-base text-black rounded-3xl border border-black/10 bg-black/5 backdrop-blur-3xl shadow-lg placeholder:text-gray-600/50 placeholder:text-base focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-black/10 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none scrollbar-hide"
+                className="w-full min-h-14 max-h-28 pr-12 pl-6 pt-4 pb-4 text-base md:text-base text-black rounded-3xl border border-black/10 bg-black/5 backdrop-blur-3xl shadow-lg placeholder:text-gray-600/50 placeholder:text-base focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-black/10 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none leading-6"
                 rows={1}
                 onKeyDown={e => {
                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -335,22 +335,14 @@ export default function ChatBot() {
                   }
                 }}
                 style={{
-                  minHeight: '56px',
-                  maxHeight: '112px',
                   scrollbarWidth: 'none',
                   msOverflowStyle: 'none',
-                  paddingTop: '16px',
-                  paddingBottom: '16px',
-                  lineHeight: '24px',
-                  display: 'flex',
-                  alignItems: 'center',
                 }}
               />
               <Button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="absolute right-2 bottom-2 w-10 h-10 shadow-none rounded-full bg-transparent hover:bg-transparent p-0 flex items-center justify-center transition-all duration-200 border-0"
-                style={{ minWidth: '40px', minHeight: '40px' }}
+                className="absolute right-2 bottom-2 w-10 h-10 min-w-10 min-h-10 shadow-none rounded-full bg-transparent hover:bg-transparent p-0 flex items-center justify-center transition-all duration-200 border-0"
               >
                 <ArrowUp className="text-black" size={20} strokeWidth={2} />
               </Button>
