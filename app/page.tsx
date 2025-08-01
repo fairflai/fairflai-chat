@@ -142,7 +142,7 @@ export default function ChatBot() {
     >
       {/* Error Display */}
       {error && (
-        <div className="absolute top-0 bg-red-50 backdrop-blur-sm border-b border-red-200 z-10">
+        <div className="absolute w-full z-99999 top-0 bg-red-50 backdrop-blur-sm border-b border-red-200">
           <div className="max-w-4xl mx-auto px-4 py-3">
             <p className="text-sm font-medium">
               ⚠️ Si è verificato un errore durante la comunicazione
@@ -180,8 +180,8 @@ export default function ChatBot() {
             </div>
 
             {/* Titolo e Descrizione */}
-            <div className="space-y-4">
-              <h1 className="text-2xl font-bold text-gray-900">
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold text-gray-900 mb-0">
                 Ciao, sono l&apos;assistente di FAIRFLAI
               </h1>
               <p className="text-lg text-gray-700 leading-relaxed">
@@ -233,19 +233,26 @@ export default function ChatBot() {
                         : 'bg-transparent border-none shadow-none text-gray-800'
                     }`}
                   >
-                    <div className={`text-base leading-relaxed ${
-                      message.role === 'assistant' ? 'markdown-content' : 'whitespace-pre-wrap'
-                    }`}>
+                    <div
+                      className={`text-base leading-relaxed ${
+                        message.role === 'assistant'
+                          ? 'markdown-content'
+                          : 'whitespace-pre-wrap'
+                      }`}
+                    >
                       {message.parts.map((part, i) => {
                         switch (part.type) {
                           case 'text':
                             return (
-                              <div 
+                              <div
                                 key={`${message.id}-${i}`}
-                                {...(message.role === 'assistant' 
-                                  ? { dangerouslySetInnerHTML: { __html: md.render(part.text) } }
-                                  : { children: part.text }
-                                )}
+                                {...(message.role === 'assistant'
+                                  ? {
+                                      dangerouslySetInnerHTML: {
+                                        __html: md.render(part.text),
+                                      },
+                                    }
+                                  : { children: part.text })}
                               />
                             )
                           default:
