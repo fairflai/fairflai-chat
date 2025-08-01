@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp, ArrowLeft } from 'lucide-react'
 import { useEffect, useState, useRef, useMemo } from 'react'
 import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom'
 import MarkdownIt from 'markdown-it'
@@ -31,8 +31,8 @@ export default function ChatBot() {
 
   // Domande rapide
   const [quickQuestions, setQuickQuestions] = useState([
-    { text: '🏡 Location', message: 'Dove si svolgerà l\'evento?' },
-    { text: '🕓 Agenda', message: 'Qual è il programma dell\'evento?' },
+    { text: '🏡 Location', message: "Dove si svolgerà l'evento?" },
+    { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
     { text: '🎈 Games', message: 'Quali giochi ci saranno?' },
   ])
 
@@ -44,6 +44,7 @@ export default function ChatBot() {
     isLoading,
     error,
     append,
+    setMessages,
   } = useChat({
     id,
     streamProtocol: 'data',
@@ -89,6 +90,22 @@ export default function ChatBot() {
     }
   }
 
+  // Funzione per resettare la chat e tornare allo splash screen
+  const resetChat = () => {
+    setMessages([])
+    setShowSplashScreen(true)
+    setQuickQuestions([
+      { text: '🏡 Location', message: "Dove si svolgerà l'evento?" },
+      { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
+      { text: '🎈 Games', message: 'Quali giochi ci saranno?' },
+    ])
+    // Reset dell'altezza del textarea
+    setInputAreaHeight(56)
+    if (textareaRef.current) {
+      textareaRef.current.style.height = '56px'
+    }
+  }
+
   // Gestisce il cambio di input con debounce implicito
   const handleInputChangeWithResize = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -109,7 +126,10 @@ export default function ChatBot() {
   }, [input])
 
   // Funzione per gestire il click su una domanda rapida
-  const handleQuickQuestion = (questionObj: { text: string; message: string }) => {
+  const handleQuickQuestion = (questionObj: {
+    text: string
+    message: string
+  }) => {
     // Nasconde lo splash screen
     setShowSplashScreen(false)
 
@@ -155,12 +175,32 @@ export default function ChatBot() {
       <div className={`sticky z-10 ${error ? 'top-12' : 'top-0'}`}>
         {!showSplashScreen && (
           <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="flex items-center gap-3 justify-center">
-              <img
-                src="/logo.png"
-                alt="FairFlai Logo"
-                className="h-6 md:h-10 w-auto"
-              />
+            <div className="flex items-center justify-between">
+              {/* Pulsante reset a destra */}
+              <Button
+                onClick={resetChat}
+                variant="ghost"
+                className="w-10 h-10 p-0 rounded-full hover:bg-black/5 transition-all duration-200"
+                title="Torna all'inizio"
+              >
+                <ArrowLeft
+                  id="mainBackButton"
+                  size={20}
+                  className="text-gray-700"
+                />
+              </Button>
+
+              {/* Logo centrato */}
+              <div className="flex items-center gap-3">
+                <img
+                  src="/logo.png"
+                  alt="FairFlai Logo"
+                  className="h-6 md:h-10 w-auto"
+                />
+              </div>
+
+              {/* Spazio vuoto a sinistra per centrare il logo */}
+              <div className="w-10"></div>
             </div>
           </div>
         )}
@@ -168,7 +208,9 @@ export default function ChatBot() {
 
       {/* Splash Screen */}
       {showSplashScreen && (
-        <div className={`flex-1 flex items-center justify-center px-4 ${error ? 'pt-12' : ''}`}>
+        <div
+          className={`flex-1 flex items-center justify-center px-4 ${error ? 'pt-12' : ''}`}
+        >
           <div className="max-w-2xl mx-auto text-center space-y-8">
             {/* Logo */}
             <div className="mb-8">

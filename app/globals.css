@@ -190,3 +190,9 @@
 .markdown-content hr {
   @apply border-gray-300 my-6;
 }
+
+#mainBackButton {
+  width: 20px !important;
+  height: 20px !important;
+}
+
