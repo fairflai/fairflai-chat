@@ -142,9 +142,9 @@ export default function ChatBot() {
     >
       {/* Error Display */}
       {error && (
-        <div className="absolute w-full z-99999 top-0 bg-red-50 backdrop-blur-sm border-b border-red-200">
+        <div className="fixed w-full z-50 top-0 left-0 bg-red-50 backdrop-blur-sm border-b border-red-200 shadow-lg">
           <div className="max-w-4xl mx-auto px-4 py-3">
-            <p className="text-sm font-medium">
+            <p className="text-sm font-medium text-red-800">
               ⚠️ Si è verificato un errore durante la comunicazione
             </p>
           </div>
@@ -152,7 +152,7 @@ export default function ChatBot() {
       )}
 
       {/* Header */}
-      <div className="sticky top-0 z-10">
+      <div className={`sticky z-10 ${error ? 'top-12' : 'top-0'}`}>
         {!showSplashScreen && (
           <div className="max-w-4xl mx-auto px-4 py-4">
             <div className="flex items-center gap-3 justify-center">
@@ -168,7 +168,7 @@ export default function ChatBot() {
 
       {/* Splash Screen */}
       {showSplashScreen && (
-        <div className="flex-1 flex items-center justify-center px-4">
+        <div className={`flex-1 flex items-center justify-center px-4 ${error ? 'pt-12' : ''}`}>
           <div className="max-w-2xl mx-auto text-center space-y-8">
             {/* Logo */}
             <div className="mb-8">
