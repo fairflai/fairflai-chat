@@ -21,11 +21,9 @@ export default function ChatBot() {
 
   // Domande rapide
   const [quickQuestions, setQuickQuestions] = useState([
-    'Che cos&apos;è FAIRFLAI GLITCH?',
-    'Quando e dove si svolge l&apos;evento?',
-    'Come posso partecipare?',
-    'Cosa si mangia all&apos;evento?',
-    'Quanto dura l&apos;evento?',
+    '🏡 Location',
+    '🕓 Agenda',
+    '🎈 Games',
   ])
 
   const {
@@ -189,7 +187,7 @@ export default function ChatBot() {
                   key={index}
                   variant="outline"
                   onClick={() => handleQuickQuestion(question)}
-                  className="w-[320px] shadow-none h-auto px-6 py-3 bg-gray-900/5 border-black/10 text-black backdrop-blur transition-all duration-200 text-base rounded-3xl hover:bg-gray-900/10 hover:text-gray-900"
+                  className="lg:w-[200px] shadow-none h-auto px-6 py-2 lg:py-3 bg-gray-900/5 border-black/10 text-black backdrop-blur transition-all duration-200 text-sm lg:text-base rounded-3xl hover:bg-gray-900/10 hover:text-gray-900"
                   disabled={isLoading}
                 >
                   {question}
@@ -222,7 +220,7 @@ export default function ChatBot() {
                     className={`rounded-3xl py-3 px-6 backdrop-blur-md ${
                       message.role === 'user'
                         ? 'bg-gray-900/5 border-black/10 text-black backdrop-blur max-w-[80%]'
-                        : 'bg-transparent border-none shadow-none text-gray-800 lg:max-w-[80%]'
+                        : 'bg-transparent border-none shadow-none text-gray-800'
                     }`}
                   >
                     <div className="whitespace-pre-wrap text-base leading-relaxed">
