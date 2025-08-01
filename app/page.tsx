@@ -31,9 +31,9 @@ export default function ChatBot() {
 
   // Domande rapide
   const [quickQuestions, setQuickQuestions] = useState([
-    '🏡 Location',
-    '🕓 Agenda',
-    '🎈 Games',
+    { text: '🏡 Location', message: 'Dove si svolgerà l\'evento?' },
+    { text: '🕓 Agenda', message: 'Qual è il programma dell\'evento?' },
+    { text: '🎈 Games', message: 'Quali giochi ci saranno?' },
   ])
 
   const {
@@ -109,17 +109,17 @@ export default function ChatBot() {
   }, [input])
 
   // Funzione per gestire il click su una domanda rapida
-  const handleQuickQuestion = (question: string) => {
+  const handleQuickQuestion = (questionObj: { text: string; message: string }) => {
     // Nasconde lo splash screen
     setShowSplashScreen(false)
 
     // Rimuovi la domanda dalla lista
-    setQuickQuestions(prev => prev.filter(q => q !== question))
+    setQuickQuestions(prev => prev.filter(q => q.text !== questionObj.text))
 
     // Invia il messaggio usando append
     append({
       role: 'user',
-      content: question,
+      content: questionObj.message,
     })
   }
 
@@ -200,7 +200,7 @@ export default function ChatBot() {
                   className="lg:w-[200px] shadow-none h-auto px-6 py-2 lg:py-3 bg-gray-900/5 border-black/10 text-black backdrop-blur transition-all duration-200 text-sm lg:text-base rounded-3xl hover:bg-gray-900/10 hover:text-gray-900"
                   disabled={isLoading}
                 >
-                  {question}
+                  {question.text}
                 </Button>
               ))}
             </div>
