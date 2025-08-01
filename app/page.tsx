@@ -210,7 +210,7 @@ export default function ChatBot() {
 
       {!showSplashScreen && (
         // Chat Area
-        <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-2 pb-0 mt-0 lg:mt-10 relative z-10 bg-red">
+        <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-2 pb-0 mt-0 lg:mt-6 relative z-10 bg-red">
           <ScrollArea
             className="pb-0"
             ref={containerRef}
