@@ -92,13 +92,8 @@ export default function ChatBot() {
 
   // Funzione per resettare la chat e tornare allo splash screen
   const resetChat = () => {
-    setMessages([])
+    // setMessages([])
     setShowSplashScreen(true)
-    setQuickQuestions([
-      { text: '🏡 Location', message: "Dove si svolgerà l'evento?" },
-      { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
-      { text: '🎈 Games', message: 'Quali giochi ci saranno?' },
-    ])
     // Reset dell'altezza del textarea
     setInputAreaHeight(56)
     if (textareaRef.current) {
@@ -132,9 +127,6 @@ export default function ChatBot() {
   }) => {
     // Nasconde lo splash screen
     setShowSplashScreen(false)
-
-    // Rimuovi la domanda dalla lista
-    setQuickQuestions(prev => prev.filter(q => q.text !== questionObj.text))
 
     // Invia il messaggio usando append
     append({
