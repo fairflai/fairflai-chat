@@ -24,6 +24,7 @@ const ALLOWED_DOMAINS = [
   '192.168.1.145',
   'fairflai-glitch.vercel.app',
   'hacker-me-fairflai.vercel.app',
+  'glitch.fairflai.com',
 ]
 
 export async function POST(req: Request) {
