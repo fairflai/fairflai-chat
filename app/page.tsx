@@ -115,8 +115,8 @@ export default function ChatBot() {
 
   return (
     <main className="relative min-h-dvh bg-[#04020a] text-white flex justify-center md:items-center px-0 sm:px-4 py-0 sm:py-6">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(212,111,255,0.25),_transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_rgba(255,166,122,0.2),_transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,222,140,0.28),_transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_rgba(255,196,110,0.22),_transparent_55%)]" />
 
       <section className="relative z-10 flex h-dvh w-full max-w-md flex-col overflow-hidden rounded-none border-white/10 bg-gradient-to-b from-[#1d1127] via-[#090412] to-[#04020a] text-white shadow-[0_45px_120px_rgba(0,0,0,0.65)] sm:h-[760px] sm:rounded-[2.75rem] sm:border">
         {error && (
@@ -139,7 +139,7 @@ export default function ChatBot() {
             </Button>
 
             <div className="flex flex-1 items-center justify-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ffb56b] via-[#ff479d] to-[#8c57ff] shadow-[0_8px_25px_rgba(255,83,157,0.45)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]">
                 <img src="/logo.png" alt="FairFlai Logo" className="h-6 w-6 object-contain" />
               </div>
               <div className="text-left">
@@ -198,7 +198,7 @@ export default function ChatBot() {
                     <div
                       className={`max-w-[82%] rounded-[28px] px-5 py-4 text-base leading-relaxed ${
                         message.role === 'user'
-                          ? 'bg-gradient-to-b from-[#ff7ee0] via-[#d264ff] to-[#8f4bff] text-white shadow-[0_18px_35px_rgba(158,82,255,0.45)]'
+                          ? 'bg-gradient-to-b from-[#fff1a6] via-[#ffd15a] to-[#ff9f1c] text-[#2b1200] shadow-[0_18px_35px_rgba(255,170,54,0.45)]'
                           : 'border border-white/8 bg-white/5 text-white/85 backdrop-blur-[30px] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
                       }`}
                     >
@@ -302,7 +302,7 @@ export default function ChatBot() {
               <Button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="absolute right-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full border-0 bg-gradient-to-br from-[#ff7ee0] via-[#d264ff] to-[#8f4bff] text-white shadow-[0_12px_30px_rgba(164,82,255,0.55)] transition disabled:opacity-40"
+                className="absolute right-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full border-0 bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] text-[#2b1200] shadow-[0_12px_30px_rgba(255,178,58,0.55)] transition disabled:opacity-40"
               >
                 <ArrowUp className="text-white" size={20} strokeWidth={2} />
               </Button>
