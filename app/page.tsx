@@ -139,20 +139,19 @@ export default function ChatBot() {
             </Button>
 
             <div className="flex flex-1 items-center justify-center gap-3">
-              <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#ffb56b] via-[#ff479d] to-[#8c57ff] shadow-[0_8px_25px_rgba(255,83,157,0.45)]" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ffb56b] via-[#ff479d] to-[#8c57ff] shadow-[0_8px_25px_rgba(255,83,157,0.45)]">
+                <img src="/logo.png" alt="FairFlai Logo" className="h-6 w-6 object-contain" />
+              </div>
               <div className="text-left">
                 <p className="text-xs font-medium uppercase tracking-[0.25em] text-white/50">
-                  Text writer
+                  FAIRFLAI
                 </p>
-                <p className="text-base font-semibold text-white">
-                  Healthy eating tips
+                <p className="text-base font-semibold text-white text-sm">
+                  Light up your organization
                 </p>
               </div>
             </div>
-
-            <div className="h-11 w-11 rounded-full border border-white/5 bg-white/5 flex items-center justify-center">
-              <img src="/logo.png" alt="FairFlai Logo" className="h-6 w-6 object-contain" />
-            </div>
+            <div className="h-11 w-11 shrink-0" aria-hidden="true" />
           </div>
         </header>
 
@@ -160,7 +159,7 @@ export default function ChatBot() {
           {showSplashScreen ? (
             <div className="flex h-full flex-col items-center justify-center gap-8 px-8 text-center">
               <div className="h-24 w-24 rounded-[32px] border border-white/10 bg-white/5 p-6">
-                <img src="/logo.png" alt="FairFlai Logo" className="h-full w-full object-contain" />
+                <img src="/logo-white.png" alt="FairFlai Logo" className="h-full w-full object-contain" />
               </div>
               <div className="space-y-3">
                 <h1 className="text-2xl font-semibold text-white">
