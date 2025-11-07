@@ -3,38 +3,41 @@
 
 import { useChat } from '@ai-sdk/react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
-import { ArrowUp, ArrowLeft } from 'lucide-react'
-import { useEffect, useState, useRef, useMemo } from 'react'
+import { ArrowUp, ArrowLeft, Paperclip, Mic } from 'lucide-react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom'
 import MarkdownIt from 'markdown-it'
 
+type QuickQuestion = {
+  text: string
+  message: string
+}
+
 export default function ChatBot() {
-  const id = 'chatbot' // Unique identifier for the chat session
+  const id = 'chatbot'
   const [showSplashScreen, setShowSplashScreen] = useState(true)
-  const [inputAreaHeight, setInputAreaHeight] = useState(56) // Altezza iniziale del textarea
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Initialize markdown-it
   const md = useMemo(() => {
     return new MarkdownIt({
-      html: false, // Disable HTML tags for security
-      breaks: true, // Convert '\n' in paragraphs into <br>
-      linkify: true, // Autoconvert URL-like text to links
+      html: false,
+      breaks: true,
+      linkify: true,
     })
   }, [])
 
-  // Scroll hook
-  const { containerRef, endRef, scrollToBottom } = useScrollToBottom()
+  const quickQuestions = useMemo<QuickQuestion[]>(
+    () => [
+      { text: '🏡 Location', message: "Dove si svolgerà l'evento?" },
+      { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
+      { text: '🎈 Games', message: 'Quali giochi ci saranno?' },
+    ],
+    []
+  )
 
-  // Domande rapide
-  const [quickQuestions, setQuickQuestions] = useState([
-    { text: '🏡 Location', message: "Dove si svolgerà l'evento?" },
-    { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
-    { text: '🎈 Games', message: 'Quali giochi ci saranno?' },
-  ])
+  const { containerRef, endRef, scrollToBottom } = useScrollToBottom()
 
   const {
     messages,
@@ -56,310 +59,233 @@ export default function ChatBot() {
     },
   })
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     scrollToBottom('auto')
   }, [messages, scrollToBottom])
 
-  // Funzione per calcolare e aggiornare l'altezza del textarea
   const updateTextareaHeight = () => {
     const textarea = textareaRef.current
     if (!textarea) return
 
-    // Salva il valore di scroll corrente
     const scrollTop = textarea.scrollTop
-
-    // Reset temporaneo per calcolare la vera altezza necessaria
     textarea.style.height = 'auto'
 
-    // Calcola la nuova altezza con limiti
     const minHeight = 56
     const maxHeight = 112
     const scrollHeight = textarea.scrollHeight
     const newHeight = Math.max(minHeight, Math.min(scrollHeight, maxHeight))
 
-    // Applica la nuova altezza
     textarea.style.height = `${newHeight}px`
-
-    // Ripristina lo scroll se necessario
     textarea.scrollTop = scrollTop
-
-    // Aggiorna lo stato solo se necessario
-    if (inputAreaHeight !== newHeight) {
-      setInputAreaHeight(newHeight)
-    }
   }
 
-  // Funzione per resettare la chat e tornare allo splash screen
   const resetChat = () => {
-    // setMessages([])
+    setMessages([])
     setShowSplashScreen(true)
-    // Reset dell'altezza del textarea
-    setInputAreaHeight(56)
     if (textareaRef.current) {
       textareaRef.current.style.height = '56px'
     }
   }
 
-  // Gestisce il cambio di input con debounce implicito
   const handleInputChangeWithResize = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     handleInputChange(e)
-    // Aggiorna l'altezza dopo che React ha aggiornato il DOM
     setTimeout(updateTextareaHeight, 0)
   }
 
-  // Reset dell'altezza quando l'input viene svuotato (dopo l'invio)
   useEffect(() => {
-    if (input === '') {
-      setInputAreaHeight(56)
-      if (textareaRef.current) {
-        textareaRef.current.style.height = '56px'
-      }
+    if (input === '' && textareaRef.current) {
+      textareaRef.current.style.height = '56px'
     }
   }, [input])
 
-  // Funzione per gestire il click su una domanda rapida
-  const handleQuickQuestion = (questionObj: {
-    text: string
-    message: string
-  }) => {
-    // Nasconde lo splash screen
+  const handleQuickQuestion = (questionObj: QuickQuestion) => {
     setShowSplashScreen(false)
-
-    // Invia il messaggio usando append
     append({
       role: 'user',
       content: questionObj.message,
     })
   }
 
-  // Funzione personalizzata per gestire il submit del form
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Nasconde lo splash screen
     setShowSplashScreen(false)
-
-    // Chiama il handleSubmit originale
     handleSubmit(e)
   }
 
   return (
-    <main
-      className="min-h-dvh flex flex-col relative"
-      style={{
-        background:
-          'linear-gradient(40deg, #fef3c7 0%, #fffbcc 35%, #fefce8 50%, #fefbfdc5 100%)',
-      }}
-    >
-      {/* Error Display */}
-      {error && (
-        <div className="fixed w-full z-50 top-0 left-0 bg-red-50 backdrop-blur-sm border-b border-red-200 shadow-lg">
-          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-center">
-            <p className="text-sm font-medium text-red-800">
-              ⚠️ Si è verificato un errore durante la comunicazione
-            </p>
-          </div>
-        </div>
-      )}
+    <main className="relative min-h-dvh bg-[#04020a] text-white flex justify-center md:items-center px-0 sm:px-4 py-0 sm:py-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(212,111,255,0.25),_transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_rgba(255,166,122,0.2),_transparent_55%)]" />
 
-      {/* Header */}
-      <div className={`sticky z-10 ${error ? 'top-12' : 'top-0'}`}>
-        {!showSplashScreen && (
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              {/* Pulsante reset a destra */}
-              <Button
-                onClick={resetChat}
-                variant="ghost"
-                className="w-10 h-10 p-0 rounded-full hover:bg-black/5 transition-all duration-200"
-                title="Torna all'inizio"
-              >
-                <ArrowLeft
-                  id="mainBackButton"
-                  size={20}
-                  className="text-gray-700"
-                />
-              </Button>
-
-              {/* Logo centrato */}
-              <div className="flex items-center gap-3">
-                <img
-                  src="/logo.png"
-                  alt="FairFlai Logo"
-                  className="h-6 md:h-10 w-auto"
-                />
-              </div>
-
-              {/* Spazio vuoto a sinistra per centrare il logo */}
-              <div className="w-10"></div>
-            </div>
+      <section className="relative z-10 flex h-dvh w-full max-w-md flex-col overflow-hidden rounded-none border-white/10 bg-gradient-to-b from-[#1d1127] via-[#090412] to-[#04020a] text-white shadow-[0_45px_120px_rgba(0,0,0,0.65)] sm:h-[760px] sm:rounded-[2.75rem] sm:border">
+        {error && (
+          <div className="px-6 py-3 text-sm text-red-100 bg-red-500/15 border-b border-red-500/30">
+            ⚠️ Si è verificato un errore durante la comunicazione
           </div>
         )}
-      </div>
 
-      {/* Splash Screen */}
-      {showSplashScreen && (
-        <div
-          className={`flex-1 flex items-center justify-center px-4 ${error ? 'pt-12' : ''}`}
-        >
-          <div className="max-w-2xl mx-auto text-center space-y-8">
-            {/* Logo */}
-            <div className="mb-8">
-              <img
-                src="/logo.png"
-                alt="FairFlai Logo"
-                className="h-20 w-auto mx-auto"
-              />
+        <header className="px-6 pt-6 pb-4">
+          <div className="flex items-center justify-between gap-4">
+            <Button
+              onClick={resetChat}
+              variant="ghost"
+              size="icon"
+              disabled={showSplashScreen}
+              className="h-11 w-11 rounded-full border border-white/5 bg-white/5 text-white/70 hover:bg-white/10"
+              title="Torna all'inizio"
+            >
+              <ArrowLeft size={20} className="text-white" />
+            </Button>
+
+            <div className="flex flex-1 items-center justify-center gap-3">
+              <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#ffb56b] via-[#ff479d] to-[#8c57ff] shadow-[0_8px_25px_rgba(255,83,157,0.45)]" />
+              <div className="text-left">
+                <p className="text-xs font-medium uppercase tracking-[0.25em] text-white/50">
+                  Text writer
+                </p>
+                <p className="text-base font-semibold text-white">
+                  Healthy eating tips
+                </p>
+              </div>
             </div>
 
-            {/* Titolo e Descrizione */}
-            <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-gray-900 mb-0">
-                Ciao, sono l&apos;assistente di FAIRFLAI
-              </h1>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Fammi pure domande sull&apos;evento oppure clicca uno dei box
-                qui sotto.
-              </p>
-            </div>
-
-            {/* CTA con le domande frequenti */}
-            <div className="flex flex-wrap gap-4 justify-center">
-              {quickQuestions.map((question, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  onClick={() => handleQuickQuestion(question)}
-                  className="lg:w-[200px] shadow-none h-auto px-6 py-2 lg:py-3 bg-gray-900/5 border-black/10 text-black backdrop-blur transition-all duration-200 text-sm lg:text-base rounded-3xl hover:bg-gray-900/10 hover:text-gray-900"
-                  disabled={isLoading}
-                >
-                  {question.text}
-                </Button>
-              ))}
+            <div className="h-11 w-11 rounded-full border border-white/5 bg-white/5 flex items-center justify-center">
+              <img src="/logo.png" alt="FairFlai Logo" className="h-6 w-6 object-contain" />
             </div>
           </div>
-        </div>
-      )}
+        </header>
 
-      {!showSplashScreen && (
-        // Chat Area
-        <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-2 pb-0 mt-0 lg:mt-6 relative z-10 bg-red">
-          <ScrollArea
-            className="pb-0"
-            ref={containerRef}
-            style={{
-              height: `calc(100dvh - ${inputAreaHeight + 100}px)`, // 140px include header + padding e margini dell'input area
-            }}
-          >
-            <div className="space-y-6">
-              {messages.map(message => (
-                <div
-                  key={message.id}
-                  className={`flex gap-3 ${
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
-                >
-                  <Card
-                    className={`rounded-3xl py-3 px-6 backdrop-blur-md ${
-                      message.role === 'user'
-                        ? 'bg-gray-900/5 border-black/10 text-black backdrop-blur max-w-[80%]'
-                        : 'bg-transparent border-none shadow-none text-gray-800'
+        <div className="flex-1 overflow-hidden">
+          {showSplashScreen ? (
+            <div className="flex h-full flex-col items-center justify-center gap-8 px-8 text-center">
+              <div className="h-24 w-24 rounded-[32px] border border-white/10 bg-white/5 p-6">
+                <img src="/logo.png" alt="FairFlai Logo" className="h-full w-full object-contain" />
+              </div>
+              <div className="space-y-3">
+                <h1 className="text-2xl font-semibold text-white">
+                  Ciao, sono l&apos;assistente di FAIRFLAI
+                </h1>
+                <p className="text-base text-white/70">
+                  Fammi pure domande sull&apos;evento oppure scegli un suggerimento rapido qui sotto.
+                </p>
+              </div>
+              <div className="grid w-full gap-3 text-left sm:grid-cols-2">
+                {quickQuestions.map((question, index) => (
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    onClick={() => handleQuickQuestion(question)}
+                    className="w-full rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-left text-white/90 transition hover:bg-white/10"
+                    disabled={isLoading}
+                  >
+                    <span className="text-base font-semibold text-white">
+                      {question.text}
+                    </span>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <ScrollArea className="h-full px-6 pb-4" ref={containerRef}>
+              <div className="space-y-6 pb-6">
+                {messages.map(message => (
+                  <div
+                    key={message.id}
+                    className={`flex w-full ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
                     }`}
                   >
                     <div
-                      className={`text-base leading-relaxed ${
-                        message.role === 'assistant'
-                          ? 'markdown-content'
-                          : 'whitespace-pre-wrap'
+                      className={`max-w-[82%] rounded-[28px] px-5 py-4 text-base leading-relaxed ${
+                        message.role === 'user'
+                          ? 'bg-gradient-to-b from-[#ff7ee0] via-[#d264ff] to-[#8f4bff] text-white shadow-[0_18px_35px_rgba(158,82,255,0.45)]'
+                          : 'border border-white/8 bg-white/5 text-white/85 backdrop-blur-[30px] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
                       }`}
                     >
-                      {message.parts.map((part, i) => {
-                        switch (part.type) {
-                          case 'text':
-                            return (
-                              <div
-                                key={`${message.id}-${i}`}
-                                {...(message.role === 'assistant'
-                                  ? {
-                                      dangerouslySetInnerHTML: {
-                                        __html: md.render(part.text),
-                                      },
-                                    }
-                                  : { children: part.text })}
-                              />
-                            )
-                          default:
-                            return null
+                      <div
+                        className={
+                          message.role === 'assistant'
+                            ? 'markdown-content text-white/90'
+                            : 'whitespace-pre-wrap'
                         }
-                      })}
+                      >
+                        {message.parts.map((part, i) => {
+                          switch (part.type) {
+                            case 'text':
+                              return (
+                                <div
+                                  key={`${message.id}-${i}`}
+                                  {...(message.role === 'assistant'
+                                    ? {
+                                        dangerouslySetInnerHTML: {
+                                          __html: md.render(part.text),
+                                        },
+                                      }
+                                    : { children: part.text })}
+                                />
+                              )
+                            default:
+                              return null
+                          }
+                        })}
+                      </div>
                     </div>
-                  </Card>
-                </div>
-              ))}
+                  </div>
+                ))}
 
-              {isLoading &&
-                (() => {
-                  // Controlla se l'ultimo messaggio è un assistant message con contenuto
-                  const lastMessage = messages[messages.length - 1]
-                  const isAssistantStreaming =
-                    lastMessage &&
-                    lastMessage.role === 'assistant' &&
-                    lastMessage.parts.some(
-                      part => part.type === 'text' && part.text.trim()
-                    )
+                {isLoading &&
+                  (() => {
+                    const lastMessage = messages[messages.length - 1]
+                    const isAssistantStreaming =
+                      lastMessage &&
+                      lastMessage.role === 'assistant' &&
+                      lastMessage.parts.some(
+                        part => part.type === 'text' && part.text.trim()
+                      )
 
-                  // Mostra "Sto scrivendo..." solo se non c'è testo in streaming
-                  if (isAssistantStreaming) return null
+                    if (isAssistantStreaming) return null
 
-                  return (
-                    <div className="flex gap-3 justify-start transition-all duration-500 ease-out opacity-100 translate-y-0">
-                      <Card className="bg-white/0 shadow-none p-4 backdrop-blur-md border-none">
-                        <div className="flex items-center gap-2 text-gray-800">
-                          <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"></div>
-                            <div
-                              className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
-                              style={{
-                                animationDelay: '0.1s',
-                              }}
-                            ></div>
-                            <div
-                              className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
-                              style={{
-                                animationDelay: '0.2s',
-                              }}
-                            ></div>
+                    return (
+                      <div className="flex justify-start">
+                        <div className="flex items-center gap-2 rounded-[28px] border border-white/8 bg-white/5 px-4 py-3 text-sm text-white/70 backdrop-blur-[30px]">
+                          <div className="flex gap-1.5">
+                            <span className="h-2 w-2 animate-bounce rounded-full bg-white/60"></span>
+                            <span
+                              className="h-2 w-2 animate-bounce rounded-full bg-white/60"
+                              style={{ animationDelay: '0.12s' }}
+                            ></span>
+                            <span
+                              className="h-2 w-2 animate-bounce rounded-full bg-white/60"
+                              style={{ animationDelay: '0.24s' }}
+                            ></span>
                           </div>
-                          <span className="text-sm">Sto pensando...</span>
+                          <span className="text-xs tracking-[0.4em] uppercase text-white/50">
+                            typing
+                          </span>
                         </div>
-                      </Card>
-                    </div>
-                  )
-                })()}
-            </div>
-            {/* End reference for scroll */}
-            <div ref={endRef} />
-          </ScrollArea>
+                      </div>
+                    )
+                  })()}
+              </div>
+              <div ref={endRef} className="h-6" />
+            </ScrollArea>
+          )}
         </div>
-      )}
 
-      {/* Input Area */}
-      <div className="sticky bottom-0 z-999">
-        <div className="max-w-4xl mx-auto px-8 py-8 pt-0">
-          <form onSubmit={handleFormSubmit} className="relative">
-            <div className="relative">
+        <div className="border-t border-white/5 bg-gradient-to-t from-[#04020a]/95 via-[#06030f]/90 to-transparent px-6 pb-6 pt-4">
+          <form onSubmit={handleFormSubmit} className="flex items-end">
+            <div className="relative flex-1">
               <Textarea
                 ref={textareaRef}
                 value={input}
                 onChange={handleInputChangeWithResize}
-                placeholder={'Scrivi il tuo messaggio...'}
-                className="w-full min-h-14 max-h-28 pr-12 pl-6 pt-4 pb-4 text-base md:text-base text-black rounded-3xl border border-black/10 bg-black/5 backdrop-blur-3xl shadow-lg placeholder:text-gray-600/50 placeholder:text-base focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-black/10 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none leading-6"
+                placeholder="Scrivi il tuo messaggio..."
+                className="w-full min-h-14 max-h-32 resize-none rounded-full border border-white/10 bg-white/5 px-6 pr-14 pt-4 pb-4 text-base text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-0"
                 rows={1}
                 onKeyDown={e => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault()
-                    // Manually trigger form submission
                     if (input.trim()) {
                       setShowSplashScreen(false)
                       handleSubmit(
@@ -373,17 +299,18 @@ export default function ChatBot() {
                   msOverflowStyle: 'none',
                 }}
               />
+
               <Button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="absolute right-2 bottom-2 w-10 h-10 min-w-10 min-h-10 shadow-none rounded-full bg-transparent hover:bg-transparent p-0 flex items-center justify-center transition-all duration-200 border-0"
+                className="absolute right-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full border-0 bg-gradient-to-br from-[#ff7ee0] via-[#d264ff] to-[#8f4bff] text-white shadow-[0_12px_30px_rgba(164,82,255,0.55)] transition disabled:opacity-40"
               >
-                <ArrowUp className="text-black" size={20} strokeWidth={2} />
+                <ArrowUp className="text-white" size={20} strokeWidth={2} />
               </Button>
             </div>
           </form>
         </div>
-      </div>
+      </section>
     </main>
   )
 }
