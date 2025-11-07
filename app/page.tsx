@@ -127,20 +127,26 @@ export default function ChatBot() {
 
         <header className="px-6 pt-6 pb-4">
           <div className="flex items-center justify-between gap-4">
-            <Button
-              onClick={resetChat}
-              variant="ghost"
-              size="icon"
-              disabled={showSplashScreen}
-              className="h-11 w-11 rounded-full border border-white/5 bg-white/5 text-white/70 hover:bg-white/10"
-              title="Torna all'inizio"
-            >
-              <ArrowLeft size={20} className="text-white" />
-            </Button>
+            {!showSplashScreen && (
+              <Button
+                onClick={resetChat}
+                variant="ghost"
+                size="icon"
+                disabled={showSplashScreen}
+                className="h-11 w-11 rounded-full border border-white/5 bg-white/5 text-white/70 hover:bg-white/10"
+                title="Torna all'inizio"
+              >
+                <ArrowLeft size={20} className="text-white" />
+              </Button>
+            )}
 
             <div className="flex flex-1 items-center justify-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]">
-                <img src="/logo.png" alt="FairFlai Logo" className="h-6 w-6 object-contain" />
+                <img
+                  src="/logo.png"
+                  alt="FairFlai Logo"
+                  className="h-6 w-6 object-contain"
+                />
               </div>
               <div className="text-left">
                 <p className="text-xs font-medium uppercase tracking-[0.25em] text-white/50">
@@ -159,23 +165,28 @@ export default function ChatBot() {
           {showSplashScreen ? (
             <div className="flex h-full flex-col items-center justify-center gap-8 px-8 text-center">
               <div className="h-24 w-24 rounded-[32px] border border-white/10 bg-white/5 p-6">
-                <img src="/logo-white.png" alt="FairFlai Logo" className="h-full w-full object-contain" />
+                <img
+                  src="/logo-white.png"
+                  alt="FairFlai Logo"
+                  className="h-full w-full object-contain"
+                />
               </div>
               <div className="space-y-3">
                 <h1 className="text-2xl font-semibold text-white">
                   Ciao, sono l&apos;assistente di FAIRFLAI
                 </h1>
                 <p className="text-base text-white/70">
-                  Fammi pure domande sull&apos;evento oppure scegli un suggerimento rapido qui sotto.
+                  Fammi pure domande sull&apos;evento oppure scegli un
+                  suggerimento rapido qui sotto.
                 </p>
               </div>
-              <div className="grid w-full gap-3 text-left sm:grid-cols-2">
+              <div className="flex flex-wrap justify-center w-full gap-3 text-left sm:grid-cols-2">
                 {quickQuestions.map((question, index) => (
                   <Button
                     key={index}
                     variant="ghost"
                     onClick={() => handleQuickQuestion(question)}
-                    className="w-full rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-left text-white/90 transition hover:bg-white/10"
+                    className="w-[200px] rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-left text-white/90 transition hover:bg-white/10"
                     disabled={isLoading}
                   >
                     <span className="text-base font-semibold text-white">
