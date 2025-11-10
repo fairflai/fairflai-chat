@@ -30,9 +30,9 @@ export default function ChatBot() {
 
   const quickQuestions = useMemo<QuickQuestion[]>(
     () => [
-      { text: '🏡 Location', message: "Dove si svolgerà l'evento?" },
+      { text: '🚩 Location', message: "Dove si svolgerà l'evento?" },
       { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
-      { text: '🎈 Games', message: 'Quali giochi ci saranno?' },
+      { text: '🕹️ Games', message: 'Quali giochi ci saranno?' },
     ],
     []
   )
