@@ -140,13 +140,11 @@ export default function ChatBot() {
               </Button>
             )}
 
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center sm:flex-row sm:gap-4">
-              <div className="flex items-center justify-center gap-3 sm:flex-1 sm:justify-start">
+            <div className="flex flex-1 flex-row flex-wrap items-center justify-start gap-2 sm:gap-4">
+              <div className="flex items-center justify-start gap-3 sm:flex-1">
                 <div
-                  className={`flex h-11 ${
-                    showSplashScreen
-                      ? 'w-16 rounded-[1.1rem]'
-                      : 'w-11 rounded-2xl'
+                  className={`flex h-11 w-12 ${
+                    showSplashScreen ? 'rounded-[1.1rem]' : 'rounded-2xl'
                   } items-center justify-center bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]`}
                 >
                   <img
@@ -155,33 +153,30 @@ export default function ChatBot() {
                     className="h-6 w-6 object-contain"
                   />
                 </div>
-                <div className="text-center sm:text-left">
-                  <p className="text-xs font-medium uppercase text-white/50">
+                <div className="text-left">
+                  <p className="text-[10px] font-medium uppercase text-white/50 sm:text-xs">
                     FAIRFLAI
                   </p>
-                  <p className="text-base font-semibold text-white text-sm">
-                    Light up your organization
+                  <p className="text-[12px] font-semibold text-white sm:text-sm leading-tight">
+                    Light up your
+                    <br />
+                    organization
                   </p>
                 </div>
               </div>
               {showSplashScreen && (
                 <>
-                  <div
-                    className="hidden h-8 w-px bg-white/10 sm:block"
-                    aria-hidden="true"
-                  />
-                  <div className="flex items-center gap-2 text-white/75 whitespace-nowrap sm:ml-auto sm:text-right">
-                    <span className="text-[8px] font-semibold uppercase tracking-[0.3em] text-white/40">
+                  <div className="flex items-center gap-2 text-white/75 whitespace-nowrap ml-auto text-right">
+                    <span className="text-[7px] font-semibold uppercase tracking-[0.3em] text-white/40 sm:text-[8px]">
                       BY
                     </span>
-                    <span className="text-xs font-semibold uppercase tracking-[0.08em]">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.08em] sm:text-xs">
                       KOPERNICANA
                     </span>
                   </div>
                 </>
               )}
             </div>
-            <div className="h-11 w-11 shrink-0" aria-hidden="true" />
           </div>
         </header>
 
