@@ -144,7 +144,9 @@ export default function ChatBot() {
               <div className="flex items-center justify-center gap-3 sm:flex-1 sm:justify-start">
                 <div
                   className={`flex h-11 ${
-                    showSplashScreen ? 'w-16 rounded-[1.1rem]' : 'w-11 rounded-2xl'
+                    showSplashScreen
+                      ? 'w-16 rounded-[1.1rem]'
+                      : 'w-11 rounded-2xl'
                   } items-center justify-center bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]`}
                 >
                   <img
@@ -164,7 +166,10 @@ export default function ChatBot() {
               </div>
               {showSplashScreen && (
                 <>
-                  <div className="hidden h-8 w-px bg-white/10 sm:block" aria-hidden="true" />
+                  <div
+                    className="hidden h-8 w-px bg-white/10 sm:block"
+                    aria-hidden="true"
+                  />
                   <div className="flex items-center gap-2 text-white/75 whitespace-nowrap sm:ml-auto sm:text-right">
                     <span className="text-[8px] font-semibold uppercase tracking-[0.3em] text-white/40">
                       BY
@@ -188,13 +193,11 @@ export default function ChatBot() {
                 alt="FairFlai Logo"
                 className="h-24 w-24 object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.35)]"
               />
-              <div className="space-y-3">
-                <h1 className="text-2xl font-semibold text-white">
-                  Ciao, sono l&apos;assistente di FAIRFLAI
-                </h1>
-                <p className="text-base text-white/70">
-                  Fammi pure domande sull&apos;evento oppure scegli un
-                  suggerimento rapido qui sotto.
+              <div className="space-y-3 flex flex-col items-center">
+                <h1 className="text-4xl font-semibold text-white">Ciao,</h1>
+                <p className="text-base text-white/70 max-w-[300px]">
+                  chiedimi quello che vuoi sull’evento o clicca uno dei box
+                  sotto
                 </p>
               </div>
               <div className="flex flex-wrap justify-center w-full gap-3 text-left sm:grid-cols-2">
