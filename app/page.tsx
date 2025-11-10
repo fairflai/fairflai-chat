@@ -5,7 +5,7 @@ import { useChat } from '@ai-sdk/react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
-import { ArrowUp, ArrowLeft, Paperclip, Mic } from 'lucide-react'
+import { ArrowUp, ArrowLeft } from 'lucide-react'
 import { useEffect, useRef, useMemo, useState } from 'react'
 import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom'
 import MarkdownIt from 'markdown-it'
@@ -140,22 +140,41 @@ export default function ChatBot() {
               </Button>
             )}
 
-            <div className="flex flex-1 items-center justify-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]">
-                <img
-                  src="/logo.png"
-                  alt="FairFlai Logo"
-                  className="h-6 w-6 object-contain"
-                />
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center sm:flex-row sm:gap-4">
+              <div className="flex items-center justify-center gap-3 sm:flex-1 sm:justify-start">
+                <div
+                  className={`flex h-11 ${
+                    showSplashScreen ? 'w-16 rounded-[1.1rem]' : 'w-11 rounded-2xl'
+                  } items-center justify-center bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]`}
+                >
+                  <img
+                    src="/logo.png"
+                    alt="FairFlai Logo"
+                    className="h-6 w-6 object-contain"
+                  />
+                </div>
+                <div className="text-center sm:text-left">
+                  <p className="text-xs font-medium uppercase text-white/50">
+                    FAIRFLAI
+                  </p>
+                  <p className="text-base font-semibold text-white text-sm">
+                    Light up your organization
+                  </p>
+                </div>
               </div>
-              <div className="text-left">
-                <p className="text-xs font-medium uppercase tracking-[0.25em] text-white/50">
-                  FAIRFLAI
-                </p>
-                <p className="text-base font-semibold text-white text-sm">
-                  Light up your organization
-                </p>
-              </div>
+              {showSplashScreen && (
+                <>
+                  <div className="hidden h-8 w-px bg-white/10 sm:block" aria-hidden="true" />
+                  <div className="flex items-center gap-2 text-white/75 whitespace-nowrap sm:ml-auto sm:text-right">
+                    <span className="text-[8px] font-semibold uppercase tracking-[0.3em] text-white/40">
+                      BY
+                    </span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.08em]">
+                      KOPERNICANA
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
             <div className="h-11 w-11 shrink-0" aria-hidden="true" />
           </div>
@@ -164,13 +183,11 @@ export default function ChatBot() {
         <div className="flex-1 overflow-hidden">
           {showSplashScreen ? (
             <div className="flex h-full flex-col items-center justify-center gap-8 px-8 text-center">
-              <div className="h-24 w-24 rounded-[32px] border border-white/10 bg-white/5 p-6">
-                <img
-                  src="/logo-white.png"
-                  alt="FairFlai Logo"
-                  className="h-full w-full object-contain"
-                />
-              </div>
+              <img
+                src="/logo-white.png"
+                alt="FairFlai Logo"
+                className="h-24 w-24 object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.35)]"
+              />
               <div className="space-y-3">
                 <h1 className="text-2xl font-semibold text-white">
                   Ciao, sono l&apos;assistente di FAIRFLAI
@@ -209,7 +226,7 @@ export default function ChatBot() {
                     <div
                       className={`max-w-[82%] rounded-[28px] px-5 py-4 text-base leading-relaxed ${
                         message.role === 'user'
-                          ? 'bg-gradient-to-b from-[#fff1a6] via-[#ffd15a] to-[#ff9f1c] text-[#2b1200] shadow-[0_18px_35px_rgba(255,170,54,0.45)]'
+                          ? 'bg-gradient-to-b from-[#fff1a6] via-[#ffd15a] to-[#ff9f1c] text-[#2b1200] shadow-[0_8px_18px_rgba(255,170,54,0.25)]'
                           : 'border border-white/8 bg-white/5 text-white/85 backdrop-blur-[30px] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
                       }`}
                     >
@@ -313,7 +330,7 @@ export default function ChatBot() {
               <Button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="absolute right-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full border-0 bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] text-[#2b1200] shadow-[0_12px_30px_rgba(255,178,58,0.55)] transition disabled:opacity-40"
+                className="absolute right-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full border-0 bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] text-[#2b1200] shadow-[0_6px_16px_rgba(255,178,58,0.3)] transition disabled:opacity-40"
               >
                 <ArrowUp className="text-white" size={20} strokeWidth={2} />
               </Button>
