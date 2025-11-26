@@ -114,6 +114,9 @@ export default function ChatBot() {
     body: {
       sessionId: sessionId,
     },
+    headers: {
+      'x-session-id': sessionId || '',
+    },
     onResponse: response => {
       if (response.status === 401) {
         setAccessError('Session expired or invalid')

@@ -14,6 +14,8 @@ export function checkRateLimit(
   identifier: string,
   config: RateLimitConfig
 ): { success: boolean; remaining: number; reset: number } {
+  console.log('[rate-limiter] Checking rate limit for:', identifier)
+
   const now = Date.now()
   const entry = rateLimits.get(identifier)
 

@@ -3,34 +3,32 @@ import type { NextRequest } from 'next/server'
 import { checkRateLimit } from './lib/security/rate-limiter'
 
 export function middleware(request: NextRequest) {
-  const ip = request.headers.get('x-forwarded-for') || 'unknown'
-  const userAgent = request.headers.get('user-agent') || ''
+  // 1. Session-based Rate Limiting (20 req/min per session)
+  // Extract session ID from request headers
+  const sessionId = request.headers.get('x-session-id')
 
-  // 1. Bot Detection (Basic)
-  const botPattern = /bot|crawler|spider|crawling/i
-  if (botPattern.test(userAgent)) {
-    console.log(`[Security] Suspicious bot detected: ${userAgent} from ${ip}`)
-    // Optionally block or just log. For now, we proceed but could add a header or flag.
-  }
+  // Use session ID as rate limit identifier
+  // If no session (e.g., /api/auth endpoint), use a default identifier
+  const rateLimitId = sessionId ? `session:${sessionId}` : 'unauthenticated'
+  const limitResult = checkRateLimit(rateLimitId, {
+    limit: 20,
+    windowMs: 60000,
+  })
 
-  // 2. IP-based Rate Limiting (20 req/min)
-  if (request.nextUrl.pathname.startsWith('/api')) {
-    const limitResult = checkRateLimit(ip, { limit: 20, windowMs: 60000 })
-    if (!limitResult.success) {
-      return new NextResponse('Too Many Requests', {
-        status: 429,
-        headers: {
-          'Retry-After': Math.ceil(
-            (limitResult.reset - Date.now()) / 1000
-          ).toString(),
-        },
-      })
-    }
+  if (!limitResult.success) {
+    return new NextResponse('Too Many Requests', {
+      status: 429,
+      headers: {
+        'Retry-After': Math.ceil(
+          (limitResult.reset - Date.now()) / 1000
+        ).toString(),
+      },
+    })
   }
 
   const response = NextResponse.next()
 
-  // 3. Security Headers
+  // 2. Security Headers
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('X-Frame-Options', 'DENY')
   response.headers.set('X-XSS-Protection', '1; mode=block')
@@ -40,5 +38,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/:path*',
+  matcher: '/api/:path*',
 }

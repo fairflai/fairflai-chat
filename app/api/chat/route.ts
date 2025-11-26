@@ -62,23 +62,7 @@ export async function POST(req: Request) {
     )
   }
 
-  // 3. Session-based Rate Limiting (10 req/min)
-  const limitResult = checkRateLimit(sessionId, { limit: 10, windowMs: 60000 })
-  if (!limitResult.success) {
-    return Response.json(
-      { error: 'Too many requests. Please try again later.' },
-      {
-        status: 429,
-        headers: {
-          'Retry-After': Math.ceil(
-            (limitResult.reset - Date.now()) / 1000
-          ).toString(),
-        },
-      }
-    )
-  }
-
-  // 4. Input Sanitization (Sanitize user messages)
+  // 3. Input Sanitization (Sanitize user messages)
   const sanitizedMessages = messages.map(msg => ({
     ...msg,
     content: msg.role === 'user' ? sanitizeInput(msg.content) : msg.content,
