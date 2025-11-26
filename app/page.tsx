@@ -264,7 +264,7 @@ export default function ChatBot() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,222,140,0.28),_transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_rgba(255,196,110,0.22),_transparent_55%)]" />
 
-      <section className="relative z-10 flex h-dvh w-full max-w-md flex-col overflow-hidden rounded-none border-white/10 bg-gradient-to-b from-[#1d1127] via-[#090412] to-[#04020a] text-white shadow-[0_45px_120px_rgba(0,0,0,0.65)] sm:h-[760px] sm:rounded-[2.75rem] sm:border">
+      <section className="relative z-10 flex h-dvh w-full max-w-md flex-col overflow-hidden rounded-none border-white/10 bg-gradient-to-b from-[#1d1127] via-[#090412] to-[#04020a] text-white shadow-[0_45px_120px_rgba(0,0,0,0.65)] sm:h-[760px] sm:max-h-[calc(100dvh-3rem)] sm:rounded-[2.75rem] sm:border">
         {rateLimitError && (
           <div className="px-6 py-3 text-sm text-yellow-100 bg-yellow-500/15 border-b border-yellow-500/30">
             ⏱️ {rateLimitError}
