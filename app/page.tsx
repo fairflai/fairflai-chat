@@ -41,6 +41,7 @@ export default function ChatBot() {
 
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [accessError, setAccessError] = useState<string | null>(null)
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null)
 
   useEffect(() => {
     // Check for code in URL
@@ -124,8 +125,12 @@ export default function ChatBot() {
         setSessionId(null)
       } else if (response.status === 429) {
         // Handle rate limit
-        const retryAfter = response.headers.get('Retry-After')
-        alert(`Too many requests. Please try again in ${retryAfter} seconds.`)
+        const retryAfter = response.headers.get('Retry-After') || '60'
+        setRateLimitError(
+          `Troppi messaggi inviati. Riprova tra ${retryAfter} secondi.`
+        )
+        // Clear the error after the retry period
+        setTimeout(() => setRateLimitError(null), parseInt(retryAfter) * 1000)
       }
     },
   })
@@ -260,7 +265,12 @@ export default function ChatBot() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_rgba(255,196,110,0.22),_transparent_55%)]" />
 
       <section className="relative z-10 flex h-dvh w-full max-w-md flex-col overflow-hidden rounded-none border-white/10 bg-gradient-to-b from-[#1d1127] via-[#090412] to-[#04020a] text-white shadow-[0_45px_120px_rgba(0,0,0,0.65)] sm:h-[760px] sm:rounded-[2.75rem] sm:border">
-        {error && (
+        {rateLimitError && (
+          <div className="px-6 py-3 text-sm text-yellow-100 bg-yellow-500/15 border-b border-yellow-500/30">
+            ⏱️ {rateLimitError}
+          </div>
+        )}
+        {error && !rateLimitError && (
           <div className="px-6 py-3 text-sm text-red-100 bg-red-500/15 border-b border-red-500/30">
             ⚠️ Si è verificato un errore durante la comunicazione
           </div>
