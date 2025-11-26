@@ -39,6 +39,66 @@ export default function ChatBot() {
 
   const { containerRef, endRef, scrollToBottom } = useScrollToBottom()
 
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [accessError, setAccessError] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Check for code in URL
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+
+    if (code) {
+      // Verify code and get session (simulated for now, ideally this would be an API call to exchange code for session)
+      // For this implementation, we'll just store the code as "verified" if it matches locally or assume the backend will verify.
+      // However, the requirement says "Upon verification, a unique session ID is generated".
+      // Since we can't easily do a backend exchange without a new endpoint, we'll simulate the "session creation" client-side
+      // OR better, we should have an endpoint to exchange code for session.
+      // Given the constraints, let's assume we pass the code to the first chat request or we need a way to get a session.
+      // Wait, the plan said "Store session ID in sessionStorage".
+      // Let's create a simple server action or API route to exchange code for session?
+      // Or we can just generate a UUID client side? No, the guide says "Upon verification... session ID is generated".
+      // Let's assume for now we pass the code in the body, and if valid, the server returns a session ID?
+      // But `useChat` expects a stream.
+      // Let's add a new API route for session creation? Or just use a client-side UUID and validate the code on every request?
+      // The guide says: "Users must provide a valid access code... Upon verification, a unique session ID is generated".
+      // Let's add a simple server action or just a fetch call to a new endpoint `api/auth`?
+      // To keep it simple and stick to the plan, let's assume we need to implement `api/auth/session`.
+
+      // actually, let's just implement the client logic to strip the code and store it,
+      // but wait, the plan says "Pass session ID in API requests".
+      // The `access-control.ts` has `createSession`. We need to expose this.
+
+      // Let's add a small API route for auth.
+      fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      })
+        .then(res => {
+          if (res.ok) return res.json()
+          throw new Error('Invalid code')
+        })
+        .then(data => {
+          sessionStorage.setItem('sessionId', data.sessionId)
+          setSessionId(data.sessionId)
+          sessionStorage.setItem('sessionId', data.sessionId)
+          setSessionId(data.sessionId)
+          // Keep code in URL as requested
+        })
+        .catch(() => {
+          setAccessError('Invalid access code')
+        })
+    } else {
+      const storedSession = sessionStorage.getItem('sessionId')
+      if (storedSession) {
+        setSessionId(storedSession)
+      } else {
+        // No code, no session
+        // setAccessError('Access code required') // Don't show error immediately, maybe show login screen?
+      }
+    }
+  }, [])
+
   const {
     messages,
     input,
@@ -52,10 +112,18 @@ export default function ChatBot() {
     id,
     streamProtocol: 'data',
     body: {
-      code:
-        typeof window !== 'undefined'
-          ? new URLSearchParams(window.location.search).get('code')
-          : null,
+      sessionId: sessionId,
+    },
+    onResponse: response => {
+      if (response.status === 401) {
+        setAccessError('Session expired or invalid')
+        sessionStorage.removeItem('sessionId')
+        setSessionId(null)
+      } else if (response.status === 429) {
+        // Handle rate limit
+        const retryAfter = response.headers.get('Retry-After')
+        alert(`Too many requests. Please try again in ${retryAfter} seconds.`)
+      }
     },
   })
 
@@ -111,6 +179,76 @@ export default function ChatBot() {
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setShowSplashScreen(false)
     handleSubmit(e)
+  }
+
+  if (!sessionId) {
+    return (
+      <main className="relative min-h-dvh bg-[#04020a] text-white flex justify-center items-center px-4">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,222,140,0.28),_transparent_60%)]" />
+        <div className="z-10 flex flex-col items-center gap-6 text-center w-full max-w-sm">
+          <img
+            src="/logo-white.png"
+            alt="FairFlai Logo"
+            className="h-24 w-24 object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.35)]"
+          />
+          <h1 className="text-2xl font-semibold">Access Required</h1>
+          <p className="text-white/70">
+            Please enter the access code to continue.
+          </p>
+
+          <form
+            onSubmit={e => {
+              e.preventDefault()
+              const formData = new FormData(e.currentTarget)
+              const code = formData.get('code') as string
+              if (!code) return
+
+              fetch('/api/auth/session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code }),
+              })
+                .then(res => {
+                  if (res.ok) return res.json()
+                  throw new Error('Invalid code')
+                })
+                .then(data => {
+                  sessionStorage.setItem('sessionId', data.sessionId)
+                  setSessionId(data.sessionId)
+                  // Update URL with code
+                  const newUrl = new URL(window.location.href)
+                  newUrl.searchParams.set('code', code)
+                  window.history.replaceState({}, '', newUrl.toString())
+                })
+                .catch(() => {
+                  setAccessError('Invalid access code')
+                })
+            }}
+            className="w-full flex flex-col gap-4"
+          >
+            <input
+              name="code"
+              type="text"
+              placeholder="Enter access code"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 focus:border-white/30 focus:outline-none"
+              autoComplete="off"
+            />
+            <Button
+              type="submit"
+              className="w-full rounded-lg bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] py-3 text-[#2b1200] font-semibold hover:opacity-90 transition"
+            >
+              Enter
+            </Button>
+          </form>
+
+          {accessError && (
+            <div className="px-4 py-2 text-sm text-red-200 bg-red-900/50 rounded-lg border border-red-500/30 w-full">
+              {accessError}
+            </div>
+          )}
+        </div>
+      </main>
+    )
   }
 
   return (

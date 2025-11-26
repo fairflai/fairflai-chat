@@ -1,6 +1,12 @@
 import { openai } from '@ai-sdk/openai'
 import { streamText } from 'ai'
-import {SYSTEM_PROMPT} from './SYSTEM_PROMPT'
+import { SYSTEM_PROMPT } from './SYSTEM_PROMPT'
+import { verifySession } from '@/lib/security/access-control'
+import { checkRateLimit } from '@/lib/security/rate-limiter'
+import {
+  validateChatRequest,
+  sanitizeInput,
+} from '@/lib/security/request-validator'
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
@@ -18,7 +24,6 @@ function getDomainFromHeader(
   }
 }
 
-const SECRET_CODE = process.env.SECRET_CODE || 'GLITCH2025'
 const ALLOWED_DOMAINS = [
   'localhost',
   '192.168.1.145',
@@ -41,26 +46,47 @@ export async function POST(req: Request) {
 
   const body = await req.json()
 
-  if (!body || !Array.isArray(body.messages) || body.messages.length === 0) {
-    return Response.json(
-      { error: "Invalid request: 'messages' field missing or empty." },
-      { status: 400 }
-    )
+  // 1. Request Validation
+  const validation = validateChatRequest(body)
+  if (!validation.valid) {
+    return Response.json({ error: validation.error }, { status: 400 })
   }
 
-  // Verifica del codice segreto
-  if (!body.code || body.code !== SECRET_CODE) {
+  const { messages, sessionId } = validation.data
+
+  // 2. Session Verification
+  if (!sessionId || !verifySession(sessionId)) {
     return Response.json(
-      { error: 'Access denied: invalid security code.' },
+      { error: 'Access denied: invalid or expired session.' },
       { status: 401 }
     )
   }
 
-  const { messages } = body
+  // 3. Session-based Rate Limiting (10 req/min)
+  const limitResult = checkRateLimit(sessionId, { limit: 10, windowMs: 60000 })
+  if (!limitResult.success) {
+    return Response.json(
+      { error: 'Too many requests. Please try again later.' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil(
+            (limitResult.reset - Date.now()) / 1000
+          ).toString(),
+        },
+      }
+    )
+  }
+
+  // 4. Input Sanitization (Sanitize user messages)
+  const sanitizedMessages = messages.map(msg => ({
+    ...msg,
+    content: msg.role === 'user' ? sanitizeInput(msg.content) : msg.content,
+  }))
 
   const result = streamText({
     model: openai('gpt-4.1'),
-    messages,
+    messages: sanitizedMessages,
     system: SYSTEM_PROMPT,
   })
 
