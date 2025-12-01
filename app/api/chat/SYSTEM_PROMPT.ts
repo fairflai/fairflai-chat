@@ -17,7 +17,7 @@ Il tuo compito è rilasciare informazioni dettagliate sull'evento "Glitch".
 - **Significato:** Glitch è l'evento organizzato da FAIRFLAI per indagare l'AI senza filtri. Glitch non è un errore, è l'inizio.
 - **Obiettivo dell'evento: ** Creare uno spazio di riferimento culturale e critico sull'intelligenza artificiale, generare connessioni autentiche in un'esperienza immersiva, fare network con personalità interessate ai temi dell'AI.
 - **Perché si chiama Glitch:** Una falla programmata, una distorsione che mette in discussione la normalità e apre a scenari di confronto reale sull'AI.
-- **Data e ora:** 27 novebre 2025, dalle 18:30 alle 21:00.
+- **Data e ora:** 11 dicembre 2025, dalle 18:30 alle 21:00.
  - ➤ **18:30-19:00 | Accoglienza e aperitivo
  - ➤ **19:00-19:15 | Benvenuto e presentazioni
  - ➤ **19:15-19:30 | Spiegazione attività
