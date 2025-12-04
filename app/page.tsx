@@ -244,6 +244,7 @@ export default function ChatBot() {
             <Button
               type="submit"
               className="w-full rounded-lg bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] py-3 text-[#2b1200] font-semibold hover:opacity-90 transition"
+              data-umami-event="access-code-submit"
             >
               Enter
             </Button>
@@ -354,6 +355,7 @@ export default function ChatBot() {
                     onClick={() => handleQuickQuestion(question)}
                     className="w-[200px] rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-left text-white/90 transition hover:bg-white/10"
                     disabled={isLoading}
+                    data-umami-event="quick-question-cta"
                   >
                     <span className="text-base font-semibold text-white">
                       {question.text}
@@ -480,6 +482,7 @@ export default function ChatBot() {
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 className="absolute right-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full border-0 bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] text-[#2b1200] shadow-[0_6px_16px_rgba(255,178,58,0.3)] transition disabled:opacity-40"
+                data-umami-event="send-message-cta"
               >
                 <ArrowUp className="text-white" size={20} strokeWidth={2} />
               </Button>
