@@ -1,9 +1,8 @@
 import { createHmac } from 'crypto'
 
 // Stateless session implementation to support serverless/stateless environments
-const ACCESS_CODE = 'GLITCH2025'
-const SECRET_KEY =
-  process.env.SESSION_SECRET || 'kopernicana-cards-secret-key-2025'
+const ACCESS_CODE = process.env.ACCESS_CODE || 'GLITCH2025'
+const SECRET_KEY = process.env.SESSION_SECRET || 'kopernicana-cards-secret-key-2025'
 
 export function isValidSession(sessionId: string): boolean {
   if (!sessionId || !sessionId.includes('.')) return false
