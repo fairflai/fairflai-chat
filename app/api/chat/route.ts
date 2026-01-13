@@ -1,4 +1,4 @@
-import { LanguageModelV1, ErrorResult, streamText } from 'ai'
+import { LanguageModelV1, streamText } from 'ai'
 import { mistral } from '@ai-sdk/mistral'
 import { openai } from '@ai-sdk/openai'
 import { SYSTEM_PROMPT } from './SYSTEM_PROMPT'
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
     model: model,
     messages: sanitizedMessages,
     system: SYSTEM_PROMPT,
-    onError: (event: ErrorResult) => {
+    onError: (event) => {
       console.error('Error streaming response:', event);
 
       // Send error to Slack
