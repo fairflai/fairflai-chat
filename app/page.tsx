@@ -30,7 +30,7 @@ export default function ChatBot() {
 
   const quickQuestions = useMemo<QuickQuestion[]>(
     () => [
-      { text: '🚩 Location', message: "Dove si svolgerà l'evento?" },
+      { text: '🚩 Location', message: "Dove si svolgerà l'evento?2" },
       { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
       { text: '🕹️ Games', message: 'Quali giochi ci saranno?' },
     ],
@@ -293,9 +293,8 @@ export default function ChatBot() {
             <div className="flex flex-1 flex-row flex-wrap items-center justify-start gap-2 sm:gap-4">
               <div className="flex items-center justify-start gap-3 sm:flex-1">
                 <div
-                  className={`flex h-11 w-12 ${
-                    showSplashScreen ? 'rounded-[1.1rem]' : 'rounded-2xl'
-                  } items-center justify-center bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]`}
+                  className={`flex h-11 w-12 ${showSplashScreen ? 'rounded-[1.1rem]' : 'rounded-2xl'
+                    } items-center justify-center bg-gradient-to-br from-[#ffe87d] via-[#ffc857] to-[#ff9f1c] shadow-[0_8px_25px_rgba(255,185,70,0.45)]`}
                 >
                   <img
                     src="/logo.png"
@@ -368,16 +367,14 @@ export default function ChatBot() {
                 {messages.map(message => (
                   <div
                     key={message.id}
-                    className={`flex w-full ${
-                      message.role === 'user' ? 'justify-end' : 'justify-start'
-                    }`}
+                    className={`flex w-full ${message.role === 'user' ? 'justify-end' : 'justify-start'
+                      }`}
                   >
                     <div
-                      className={`max-w-[82%] rounded-[28px] px-5 py-4 text-base leading-relaxed ${
-                        message.role === 'user'
+                      className={`max-w-[82%] rounded-[28px] px-5 py-4 text-base leading-relaxed ${message.role === 'user'
                           ? 'bg-gradient-to-b from-[#fff1a6] via-[#ffd15a] to-[#ff9f1c] text-[#2b1200] shadow-[0_8px_18px_rgba(255,170,54,0.25)]'
                           : 'border border-white/8 bg-white/5 text-white/85 backdrop-blur-[30px] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
-                      }`}
+                        }`}
                     >
                       <div
                         className={
@@ -394,10 +391,10 @@ export default function ChatBot() {
                                   key={`${message.id}-${i}`}
                                   {...(message.role === 'assistant'
                                     ? {
-                                        dangerouslySetInnerHTML: {
-                                          __html: md.render(part.text),
-                                        },
-                                      }
+                                      dangerouslySetInnerHTML: {
+                                        __html: md.render(part.text),
+                                      },
+                                    }
                                     : { children: part.text })}
                                 />
                               )
