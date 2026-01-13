@@ -81,6 +81,8 @@ export async function POST(req: Request) {
     model = mistral('mistral-medium-latest') // mistral-large-latest
   }
 
+  console.error('Model: ' + MAIN_MODEL);
+
   const result = streamText({
     model: model,
     messages: sanitizedMessages,
