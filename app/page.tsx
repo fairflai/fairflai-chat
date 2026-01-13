@@ -82,8 +82,6 @@ export default function ChatBot() {
         .then(data => {
           sessionStorage.setItem('sessionId', data.sessionId)
           setSessionId(data.sessionId)
-          sessionStorage.setItem('sessionId', data.sessionId)
-          setSessionId(data.sessionId)
           // Keep code in URL as requested
         })
         .catch(() => {

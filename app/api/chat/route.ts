@@ -1,14 +1,18 @@
+import { LanguageModelV1, ErrorResult, streamText } from 'ai'
+import { mistral } from '@ai-sdk/mistral'
 import { openai } from '@ai-sdk/openai'
-import { streamText } from 'ai'
 import { SYSTEM_PROMPT } from './SYSTEM_PROMPT'
 import { verifySession } from '@/lib/security/access-control'
-import { checkRateLimit } from '@/lib/security/rate-limiter'
+import { WebClient } from '@slack/web-api'
+
+// TODO Rate limiter
+//import { checkRateLimit } from '@/lib/security/rate-limiter'
 import {
   validateChatRequest,
   sanitizeInput,
 } from '@/lib/security/request-validator'
 
-// Allow streaming responses up to 30 seconds
+// TODO Allow streaming responses up to 30 seconds
 export const maxDuration = 30
 
 function getDomainFromHeader(
@@ -68,10 +72,37 @@ export async function POST(req: Request) {
     content: msg.role === 'user' ? sanitizeInput(msg.content) : msg.content,
   }))
 
+  // Read model from env (default openai)
+  const MAIN_MODEL = process.env.MAIN_MODEL || 'openai'
+  let model: LanguageModelV1 = openai('gpt-4.1')
+
+  // Override model
+  if (MAIN_MODEL === 'mistral') {
+    model = mistral('mistral-medium-latest') // mistral-large-latest
+  }
+
   const result = streamText({
-    model: openai('gpt-4.1'),
+    model: model,
     messages: sanitizedMessages,
     system: SYSTEM_PROMPT,
+    onError: (event: ErrorResult) => {
+      console.error('Error streaming response:', event);
+
+      // Send error to Slack
+      const slackToken = process.env.SLACK_TOKEN;
+      const slackChanelId = process.env.SLACK_CHANEL_ID;
+
+      if (slackToken && slackChanelId) {
+        const web = new WebClient(slackToken);
+
+        // Post a message to the channel, and await the result.
+        // Find more arguments and details of the response: https://docs.slack.dev/reference/methods/chat.postMessage
+        web.chat.postMessage({
+          text: `Fairflai Chat:\n${JSON.stringify(event)}`,
+          channel: slackChanelId
+        })
+      }
+    }
   })
 
   return result.toDataStreamResponse()

@@ -1,6 +1,6 @@
 # FairFlai Chat
 
-AI chatbot progettat0 per l'assistenza agli eventi, che fornisce informazioni in tempo reale su luogo, programma e attività. Costruita con [Next.js](https://nextjs.org/) e [Vercel AI SDK](https://sdk.vercel.ai/docs).
+AI chatbot progettato per l'assistenza agli eventi, che fornisce informazioni in tempo reale su luogo, programma e attività. Costruita con [Next.js](https://nextjs.org/) e [Vercel AI SDK](https://sdk.vercel.ai/docs).
 
 ## Funzionalità
 
@@ -45,11 +45,7 @@ AI chatbot progettat0 per l'assistenza agli eventi, che fornisce informazioni in
    ```
 
 3. Configura le variabili d'ambiente:
-   Crea un file `.env` nella directory principale. Probabilmente avrai bisogno di una chiave API OpenAI o simile, a seconda del provider AI utilizzato in `app/api`.
-
-   ```env
-   OPENAI_API_KEY=sk-...
-   ```
+   Crea un file `.env` nella directory principale, per un esempio consulta il file `.env.example`.
 
 4. Avvia il server di sviluppo:
 

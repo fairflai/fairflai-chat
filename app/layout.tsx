@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="it">
       <Script
         src="https://cloud.umami.is/script.js"
         data-website-id="454930de-3979-466c-bedd-cfe78e8569e3"
