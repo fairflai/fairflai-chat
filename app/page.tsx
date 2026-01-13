@@ -30,7 +30,7 @@ export default function ChatBot() {
 
   const quickQuestions = useMemo<QuickQuestion[]>(
     () => [
-      { text: '🚩 Location', message: "Dove si svolgerà l'evento?2" },
+      { text: '🚩 Location22222', message: "Dove si svolgerà l'evento?" },
       { text: '🕓 Agenda', message: "Qual è il programma dell'evento?" },
       { text: '🕹️ Games', message: 'Quali giochi ci saranno?' },
     ],
@@ -372,8 +372,8 @@ export default function ChatBot() {
                   >
                     <div
                       className={`max-w-[82%] rounded-[28px] px-5 py-4 text-base leading-relaxed ${message.role === 'user'
-                          ? 'bg-gradient-to-b from-[#fff1a6] via-[#ffd15a] to-[#ff9f1c] text-[#2b1200] shadow-[0_8px_18px_rgba(255,170,54,0.25)]'
-                          : 'border border-white/8 bg-white/5 text-white/85 backdrop-blur-[30px] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
+                        ? 'bg-gradient-to-b from-[#fff1a6] via-[#ffd15a] to-[#ff9f1c] text-[#2b1200] shadow-[0_8px_18px_rgba(255,170,54,0.25)]'
+                        : 'border border-white/8 bg-white/5 text-white/85 backdrop-blur-[30px] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
                         }`}
                     >
                       <div
