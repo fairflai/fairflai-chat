@@ -31,17 +31,14 @@ function getDomainFromHeader(
 const ALLOWED_DOMAINS = [
   'localhost',
   '192.168.1.145',
-  'fairflai-glitch.vercel.app',
-  'hacker-me-fairflai.vercel.app',
-  'glitch.fairflai.com',
+  'fairflai-chat-git-dev-fairflais-projects.vercel.app',
+  'glitch.fairflai.com'
 ]
 
 export async function POST(req: Request) {
   // Controllo dominio da Origin o Referer
   const origin = req.headers.get('origin') || req.headers.get('referer')
   const domain = getDomainFromHeader(origin)
-
-  console.info('In ingresso')
 
   if (!domain || !ALLOWED_DOMAINS.includes(domain)) {
     return Response.json(
@@ -83,15 +80,11 @@ export async function POST(req: Request) {
     model = mistral('mistral-medium-latest') // mistral-large-latest
   }
 
-  console.info('Model: ' + MAIN_MODEL)
-  console.error('Model: ' + MAIN_MODEL)
-
   const result = streamText({
     model: model,
     messages: sanitizedMessages,
     system: SYSTEM_PROMPT,
     onError: (event) => {
-      console.info('Error streaming response:', event)
       console.error('Error streaming response:', event)
 
       // Send error to Slack
