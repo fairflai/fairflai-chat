@@ -41,6 +41,8 @@ export async function POST(req: Request) {
   const origin = req.headers.get('origin') || req.headers.get('referer')
   const domain = getDomainFromHeader(origin)
 
+  console.info('In ingresso')
+
   if (!domain || !ALLOWED_DOMAINS.includes(domain)) {
     return Response.json(
       { error: 'Access forbidden: unauthorized domain.' },
@@ -81,14 +83,16 @@ export async function POST(req: Request) {
     model = mistral('mistral-medium-latest') // mistral-large-latest
   }
 
-  console.error('Model: ' + MAIN_MODEL);
+  console.info('Model: ' + MAIN_MODEL)
+  console.error('Model: ' + MAIN_MODEL)
 
   const result = streamText({
     model: model,
     messages: sanitizedMessages,
     system: SYSTEM_PROMPT,
     onError: (event) => {
-      console.error('Error streaming response:', event);
+      console.info('Error streaming response:', event)
+      console.error('Error streaming response:', event)
 
       // Send error to Slack
       const slackToken = process.env.SLACK_TOKEN;
