@@ -97,8 +97,42 @@ export async function POST(req: Request) {
         // Post a message to the channel, and await the result.
         // Find more arguments and details of the response: https://docs.slack.dev/reference/methods/chat.postMessage
         web.chat.postMessage({
-          text: "Fairflai Chat:\n" + event.error,
-          channel: slackChanelId
+          text: `Fairflai Chat error: ${event.error}`, // Fallback text
+          channel: slackChanelId,
+          blocks: [
+            {
+              type: 'header',
+              text: {
+                type: 'plain_text',
+                text: '🚨 Fairflai Chat error',
+                emoji: true
+              }
+            },
+            {
+              type: 'section',
+              fields: [
+                {
+                  type: 'mrkdwn',
+                  text: `*Domain:*\n${domain || 'Unknown'}`
+                },
+                {
+                  type: 'mrkdwn',
+                  text: `*Model:*\n${MAIN_MODEL}`
+                },
+                {
+                  type: 'mrkdwn',
+                  text: `*Session ID:*\n\`${sessionId || 'N/A'}\``
+                }
+              ]
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*Error details:*\n\`\`\`${event.error}\`\`\``
+              }
+            }
+          ]
         })
       }
     }
